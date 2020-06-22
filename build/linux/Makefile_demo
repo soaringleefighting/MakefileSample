@@ -1,0 +1,69 @@
+#########################################################################
+## Function: makefile for demo
+## Platform: linux
+## Author: 	 lipeng
+## Modified: 2020.6.18 created
+#########################################################################
+
+platform ?= x86_64
+PUREC ?= 0
+DEBUG ?= 0
+
+include config.mk
+
+#指定后缀名和伪目标
+.SUFFIXES: .c,.o,.cpp,.S,.s  
+.PHONY: all,clean
+
+#设置相关路径
+vpath %.h ./../../include
+DEMOPATH = ./../../demo
+INC_PATH = ./../../include
+LIB_PATH := $(LIB_DIR)
+LIB_NAME := libAVSample
+LIBS	= $(LIB_PATH)/$(LIB_NAME).a
+
+#设置工具的相关参数
+BIN_TARGET = $(OUT_DIR)/demo
+
+#设置编译的目标文件
+SRCS = $(DEMOPATH)/demo.c        			\
+	   $(DEMOPATH)/os_time_sdk.c		
+	   
+OBJS = $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS))))
+
+##设置编译选项
+CFLAGS := $(DEBUG_FLAGS)  -Wall   
+CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
+
+CXXFLAGS := -Wall 
+
+ASMFLAGS := $(DEBUG_FLAGS)
+ASMFLAGS += $(EXTRA_AFLAGS)
+ 
+LDFLAGS := -Wall -lm
+LDFLAGS += $(EXTRA_FLAGS)
+
+#编译规则
+all:  $(BIN_TARGET)
+
+$(BIN_TARGET):	$(OBJS)
+#	$(error $(OBJS))
+#	$(shell mkdir $(OUT_DIR)) 
+	$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) 
+
+%.o: %.c
+	$(CC) -c $< $(CFLAGS) -o $@
+%.o: %.cpp
+	$(CXX) -c $< $(CXXFLAGS) -o $@
+		
+%.o:%.asm
+	$(ASM) $< $(ASMFLAGS) -o $@	
+%.o:%.S
+	$(ASM) $< $(ASMFLAGS) -c -o $@
+%.o:%.s
+	$(ASM) $< $(ASMFLAGS) -c -o $@	
+		
+clean:
+	-rm	$(OBJS)
+	-rm $(BIN_TARGET)

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAVSample_lib", "Transpose_alg\Transpose_alg.vcxproj", "{4169415D-7432-468C-9134-83FF83165E14}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAVSample_demo", "libAVSample_demo\libAVSample_demo.vcxproj", "{76C51591-A540-4DD6-9181-EDCB673AD5BE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4169415D-7432-468C-9134-83FF83165E14} = {4169415D-7432-468C-9134-83FF83165E14}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4169415D-7432-468C-9134-83FF83165E14}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4169415D-7432-468C-9134-83FF83165E14}.Debug|Win32.Build.0 = Debug|Win32
+		{4169415D-7432-468C-9134-83FF83165E14}.Debug|x64.ActiveCfg = Debug|x64
+		{4169415D-7432-468C-9134-83FF83165E14}.Debug|x64.Build.0 = Debug|x64
+		{4169415D-7432-468C-9134-83FF83165E14}.Release|Win32.ActiveCfg = Release|Win32
+		{4169415D-7432-468C-9134-83FF83165E14}.Release|Win32.Build.0 = Release|Win32
+		{4169415D-7432-468C-9134-83FF83165E14}.Release|x64.ActiveCfg = Release|x64
+		{4169415D-7432-468C-9134-83FF83165E14}.Release|x64.Build.0 = Release|x64
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Debug|Win32.Build.0 = Debug|Win32
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Debug|x64.ActiveCfg = Debug|x64
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Release|Win32.ActiveCfg = Release|Win32
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Release|Win32.Build.0 = Release|Win32
+		{76C51591-A540-4DD6-9181-EDCB673AD5BE}.Release|x64.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

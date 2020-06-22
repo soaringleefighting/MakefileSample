@@ -1,0 +1,121 @@
+#########################################################################
+## Function: makefile for lib
+## Platform: linux
+## Author: 	 lipeng
+## Modified: 2020.6.18 created
+#########################################################################
+
+platform ?= x86_64
+PUREC ?= 0
+DEBUG ?= 0
+
+#包含编译配置(系统或架构相关宏以及编译链接选项等配置)
+include config.mk
+
+#指定后缀名和伪目标
+.SUFFIXES: .c,.o,.cpp,.S,.s  
+.PHONY: all,clean
+
+#设置相关路径
+SRC_PATH := ./../../src
+INC_PATH := ./../../include
+LIB_PATH := $(LIB_DIR)
+LIB_NAME := libAVSample
+
+#设置搜索路径
+V_PATH = $(INC_PATH)
+V_PATH += $(SRC_PATH)
+
+vpath %.h $(V_PATH)
+
+#设置编译的相关参数
+CFLAGS := $(DEBUG_FLAGS)  #-Wall   
+CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
+
+CXXFLAGS := -Wall 
+
+ASMFLAGS := $(DEBUG_FLAGS)
+ASMFLAGS += $(EXTRA_AFLAGS)
+ 
+LDFLAGS := -Wall -lm
+LDFLAGS += $(EXTRA_LFLAGS)
+
+ARFLAGS := cr
+
+LIBS	:= $(LIB_PATH)/$(LIB_NAME).a $(LIB_PATH)/$(LIB_NAME).so
+
+#获取需要编译的OBJS
+#方法1：指定文件
+#以下获取OBJS文件的方式适用于含有少量文件的编译
+C_SRCS = $(SRC_PATH)/transpose.c
+	      
+
+#方法2：遍历文件夹
+#以下通过通配符和字符串函数获取OBJS的方式适用于较大工程（含有大量文件）的编译
+#C_SRCS:= $(wildcard $(SRC_PATH)/*.c) $(wildcard $(SRC_PATH)/x86/*.c)
+#C_SRCS+= $(wildcard $(SRC_PATH)/../utils/*.c) $(wildcard $(SRC_PATH)/../utils/*.c) 
+
+#A_SRCS		:= $(wildcard $(SRC_PATH)/x86/*.asm) 
+#A_SRCS		+= $(wildcard $(SRC_PATH)/../utils/x86/*.asm) 
+
+#C_OBJS		:= $(patsubst %.c, %.o,$(C_SRCS))
+#A_OBJS		+= $(patsubst %.asm, %.o,$(A_SRCS))
+
+#OBJS	:= $(filter-out %x86inc.o %x86util.o, $(C_OBJS) $(A_OBJS))
+
+ifeq ($(PUREC), 0)
+#X86 32位纯汇编
+ifeq ($(platform), x86_32)
+C_SRCS += $(SRC_PATH)/x86/transpose_init.c
+A_SRCS += $(SRC_PATH)/x86/transpose_x86_32.asm	
+endif
+#X86 64位纯汇编
+ifeq ($(platform), x86_64)
+C_SRCS += $(SRC_PATH)/x86/transpose_init.c
+A_SRCS += $(SRC_PATH)/x86/transpose_x86_64.asm
+endif
+
+# ARM32位NEON汇编
+ifeq ($(platform), arm32)
+C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c
+A_SRCS += $(SRC_PATH)/arm/transpose_neon_arm.S
+endif
+
+# AARCH64 NEON汇编
+ifeq ($(platform), arm64)
+C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c
+A_SRCS += $(SRC_PATH)/aarch64/transpose_neon_aarch64.S
+endif
+endif
+
+SRCS := $(C_SRCS) $(A_SRCS)
+	   
+OBJS = $(patsubst %.S,%.o, $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS)))))
+
+#编译规则
+all: $(MKDIR) $(LIBS)
+$(MKDIR):
+	-mkdir $(LIB_DIR)
+	
+$(filter %.a, $(LIBS)):$(OBJS)
+	#mkdir $(LIB_DIR)
+	$(AR) $(ARFLAGS) $@ $^
+
+$(filter %.so, $(LIBS)):$(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^
+	
+%.o: %.c
+	$(CC) -c $< $(CFLAGS) -o $@
+%.o: %.cpp
+	$(CXX) -c $< $(CXXFLAGS) -o $@
+		
+%.o:%.asm
+	$(ASM) $< $(ASMFLAGS)  -o $@	
+%.o:%.S
+	$(ASM) $< $(ASMFLAGS) -c -o $@
+%.o:%.s
+	$(ASM) $< $(ASMFLAGS) -c -o $@	
+		
+clean:
+	-rm	$(OBJS)
+	-rm $(LIBS)
