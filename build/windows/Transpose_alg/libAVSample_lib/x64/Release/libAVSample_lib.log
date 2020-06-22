@@ -1,0 +1,28 @@
+﻿Build started 2020/6/22 11:51:32.
+     1>Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_lib\libAVSample_lib.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "x64\Release\libAVSample_lib.lastbuildstate".
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+       InitializeBuildStatus:
+         Creating "x64\Release\libAVSample_lib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       CustomBuild:
+         Performing Custom Build Tools
+       ClCompile:
+         D:\software\VS2010\VC\bin\x86_amd64\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /GL /D _MBCS /D _CRT_SECURE_NO_WARNINGS /D WIN32 /D ARCH_X86=1 /D ARCH_MIPS=0 /D ARCH_ARM=0 /D ARCH_AARCH64=0 /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"x64\Release\\" /Fd"x64\Release\vc100.pdb" /Gd /TC /errorReport:prompt ..\..\..\..\src\transpose.c ..\..\..\..\src\x86\transpose_init.c
+         transpose.c
+     1>y:\linux\makefilesample\src\transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+         transpose_init.c
+     1>y:\linux\makefilesample\src\x86\../transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+       Lib:
+         D:\software\VS2010\VC\bin\x86_amd64\Lib.exe /OUT:"../../../../out/windows_x86_x64\libAVSample.lib" /NOLOGO /LTCG x64\Release\transpose_x86_64.obj
+         x64\Release\transpose.obj
+         x64\Release\transpose_init.obj
+         libAVSample_lib.vcxproj -> Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_lib\../../../../out/windows_x86_x64\libAVSample.lib
+       FinalizeBuildStatus:
+         Deleting file "x64\Release\libAVSample_lib.unsuccessfulbuild".
+         Touching "x64\Release\libAVSample_lib.lastbuildstate".
+     1>Done Building Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_lib\libAVSample_lib.vcxproj" (rebuild target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.92

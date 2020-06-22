@@ -56,7 +56,7 @@ if %platform%=="x64" (
 @rem notepad build.log
 @rem copy %~dp0bin\xvidcore.dll  %~dp0..\lib\
 @rem copy %~dp0bin\xvidcore.lib  %~dp0..\lib\
-
+@echo "±‡“Î≥…π¶£°"
 
 :end
 @rem pause

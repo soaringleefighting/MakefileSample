@@ -1,0 +1,27 @@
+1>------ Rebuild All started: Project: libAVSample_lib, Configuration: Release x64 ------
+1>Build started 2020/6/22 11:51:32.
+1>_PrepareForClean:
+1>  Deleting file "x64\Release\libAVSample_lib.lastbuildstate".
+1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+1>InitializeBuildStatus:
+1>  Creating "x64\Release\libAVSample_lib.unsuccessfulbuild" because "AlwaysCreate" was specified.
+1>CustomBuild:
+1>  Performing Custom Build Tools
+1>ClCompile:
+1>  transpose.c
+1>y:\linux\makefilesample\src\transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+1>  transpose_init.c
+1>y:\linux\makefilesample\src\x86\../transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+1>Lib:
+1>  libAVSample_lib.vcxproj -> Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_lib\../../../../out/windows_x86_x64\libAVSample.lib
+1>FinalizeBuildStatus:
+1>  Deleting file "x64\Release\libAVSample_lib.unsuccessfulbuild".
+1>  Touching "x64\Release\libAVSample_lib.lastbuildstate".
+1>
+1>Build succeeded.
+1>
+1>Time Elapsed 00:00:00.92
+2>------ Skipped Rebuild All: Project: libAVSample_demo, Configuration: Release Win32 ------
+2>Project not selected to build for this solution configuration 
+========== Rebuild All: 1 succeeded, 0 failed, 1 skipped ==========
+

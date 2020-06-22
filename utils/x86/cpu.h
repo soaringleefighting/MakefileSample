@@ -19,8 +19,8 @@
 #ifndef AVUTIL_X86_CPU_H
 #define AVUTIL_X86_CPU_H
 
-#include "../cpu.h"
-#include "../cpu_internal.h"
+//#include "../cpu.h"
+//#include "../cpu_internal.h"
 
 #define AV_CPU_FLAG_AMD3DNOW    AV_CPU_FLAG_3DNOW
 #define AV_CPU_FLAG_AMD3DNOWEXT AV_CPU_FLAG_3DNOWEXT

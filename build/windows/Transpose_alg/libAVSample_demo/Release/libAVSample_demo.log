@@ -1,0 +1,21 @@
+﻿Build started 2020/6/22 11:44:33.
+     1>Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_demo\libAVSample_demo.vcxproj" on node 2 (rebuild target(s)).
+     1>_PrepareForClean:
+         Deleting file "Release\libAVSample_demo.lastbuildstate".
+       InitializeBuildStatus:
+         Touching "Release\libAVSample_demo.unsuccessfulbuild".
+       ClCompile:
+         D:\software\VS2010\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _MBCS /D WIN32 /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\..\..\demo\demo.c ..\..\..\..\demo\os_time_sdk.c
+         demo.c
+     1>..\..\..\..\demo\demo.c : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+     1>y:\linux\makefilesample\demo\../src/transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+         os_time_sdk.c
+       Link:
+         D:\software\VS2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"Y:\linux\MakefileSample\build\windows\Transpose_alg\Release\libAVSample_demo.exe" /NOLOGO /LIBPATH:../../../../out/windows_x86_Win32 libAVSample.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\libAVSample_demo.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"Y:\linux\MakefileSample\build\windows\Transpose_alg\Release\libAVSample_demo.pdb" /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"Y:\linux\MakefileSample\build\windows\Transpose_alg\Release\libAVSample_demo.lib" /MACHINE:X86 Release\demo.obj
+         Release\os_time_sdk.obj
+     1>LINK : fatal error LNK1104: cannot open file 'Y:\linux\MakefileSample\build\windows\Transpose_alg\Release\libAVSample_demo.exe'
+     1>Done Building Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_demo\libAVSample_demo.vcxproj" (rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.96

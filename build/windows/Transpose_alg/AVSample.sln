@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAVSample_lib", "Transpose_alg\Transpose_alg.vcxproj", "{4169415D-7432-468C-9134-83FF83165E14}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAVSample_lib", "libAVSample_lib\libAVSample_lib.vcxproj", "{4169415D-7432-468C-9134-83FF83165E14}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAVSample_demo", "libAVSample_demo\libAVSample_demo.vcxproj", "{76C51591-A540-4DD6-9181-EDCB673AD5BE}"
 	ProjectSection(ProjectDependencies) = postProject

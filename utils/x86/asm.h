@@ -22,7 +22,7 @@
 #define AVUTIL_X86_ASM_H
 
 #include <stdint.h>
-#include "../config.h"
+//#include "../config.h"
 
 typedef struct xmm_reg { uint64_t a, b; } xmm_reg;
 typedef struct ymm_reg { uint64_t a, b, c, d; } ymm_reg;

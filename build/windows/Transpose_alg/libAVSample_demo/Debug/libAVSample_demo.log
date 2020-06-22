@@ -1,0 +1,21 @@
+﻿Build started 2020/6/22 11:38:19.
+     1>Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_demo\libAVSample_demo.vcxproj" on node 2 (build target(s)).
+     1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
+     1>InitializeBuildStatus:
+         Creating "Debug\libAVSample_demo.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         D:\software\VS2010\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /D WIN32 /D _CRT_SECURE_NO_WARNINGS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TC /analyze- /errorReport:prompt ..\..\..\..\demo\demo.c ..\..\..\..\demo\os_time_sdk.c
+         os_time_sdk.c
+         demo.c
+     1>y:\linux\makefilesample\demo\demo.c : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+     1>y:\linux\makefilesample\src\transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
+         Generating Code...
+       Link:
+         D:\software\VS2010\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"../../../../bin/windows_x86_Win32\libAVSample_demo.exe" /NOLOGO /LIBPATH:../../../../out/windows_x86_Win32 libAVSample.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\libAVSample_demo.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"Y:\linux\MakefileSample\bin\windows_x86_Win32\libAVSample_demo.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"../../../../bin/windows_x86_Win32\libAVSample_demo.lib" /MACHINE:X86 Debug\demo.obj
+         Debug\os_time_sdk.obj
+     1>LINK : fatal error LNK1104: cannot open file '../../../../bin/windows_x86_Win32\libAVSample_demo.exe'
+     1>Done Building Project "Y:\linux\MakefileSample\build\windows\Transpose_alg\libAVSample_demo\libAVSample_demo.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.03
