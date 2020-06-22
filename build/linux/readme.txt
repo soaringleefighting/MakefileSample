@@ -19,23 +19,51 @@ make -f Makefile_demo platform=x86_32 PUREC=0
 
 2、ARM平台
 (1) ARM32位：
-make -f Makefile_lib platform=arm32  CROSS=arm-linux-androideabi-
-make -f Makefile_demo platform=arm32  CROSS=arm-linux-androideabi-
+纯C编译：
+make -f Makefile_lib platform=arm32  CROSS=arm-linux-androideabi- PUREC=1
+make -f Makefile_demo platform=arm32  CROSS=arm-linux-androideabi- PUREC=1
+NEON编译：
+make -f Makefile_lib platform=arm32  CROSS=arm-linux-androideabi- PUREC=0
+make -f Makefile_demo platform=arm32  CROSS=arm-linux-androideabi- PUREC=0
 
 (2) ARM64位:
+纯C编译：
+make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=1
+make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=1
+NEON编译：
+make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=0
+make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=0
 
-
-2、Mac平台
+3、Mac平台
 (1) Mac64位：
+纯C编译：
 make -f Makefile_lib target_plat=mac platform=x86_64 PUREC=1
 make -f Makefile_demo target_plat=mac platform=x86_64 PUREC=1
+汇编编译：
+make -f Makefile_lib target_plat=mac platform=x86_64 PUREC=0
+make -f Makefile_demo target_plat=mac platform=x86_64 PUREC=0
+
 (2) Mac32位：
+纯C编译：
 make -f Makefile_lib target_plat=mac platform=x86_32 PUREC=1
 make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=1
+汇编编译：
+make -f Makefile_lib target_plat=mac platform=x86_32 PUREC=0
+make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=0
 
-3、IOS平台
+4、IOS平台
 (1) IOS32位：
+纯C编译：
 make -f Makefile_lib target_plat=ios platform=ios32 PUREC=1
 make -f Makefile_demo target_plat=ios platform=ios32  PUREC=1
+汇编编译：
+make -f Makefile_lib target_plat=ios platform=ios32 PUREC=0
+make -f Makefile_demo target_plat=ios platform=ios32  PUREC=0
+
 (2) IOS64位：
+纯C编译：
+make -f Makefile_lib target_plat=ios platform=ios64  PUREC=1
 make -f Makefile_demo target_plat=ios platform=ios64  PUREC=1
+汇编编译：
+make -f Makefile_lib target_plat=ios platform=ios64 PUREC=0
+make -f Makefile_demo target_plat=ios platform=ios64  PUREC=0
