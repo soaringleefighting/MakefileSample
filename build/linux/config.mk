@@ -26,15 +26,11 @@ ifeq ($(platform), arm32)
 	ARCH_DEF	:= -DARCH_ARM=1 
 	arch		:= arm
 	EXTRA_CFLAGS := -march=armv7-a -marm $(ARCH_DEF)
-	EXTRA_LFLAGS := -march=armv7-a -marm 
+	EXTRA_LFLAGS := -march=armv7-a -marm -pie -fPIE
 	EXTRA_AFLAGS := -march=armv7-a $(ARCH_DEF)
-ifeq ($(CROSS), )
+	EXTRA_LFLAGS_SO := -shared
 	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)
-else	
-	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)_$(CROSS)
-	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)_$(CROSS)
-endif
 endif
 
 ###ARM64架构	
@@ -42,15 +38,11 @@ ifeq ($(platform), arm64)
 	ARCH_DEF	:= -DARCH_AARCH64=1 -DHAVE_NEON=1
 	arch		:= aarch64
 	EXTRA_CFLAGS := -march=armv8-a $(ARCH_DEF)
-	EXTRA_LFLAGS := -march=armv8-a  
+	EXTRA_LFLAGS := -march=armv8-a  -pie -fPIE
 	EXTRA_AFLAGS := -march=armv8-a $(ARCH_DEF)
-ifeq ($(CROSS), )
+	EXTRA_LFLAGS_SO := -shared
 	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)
-else	
-	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)_$(CROSS)
-	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)_$(CROSS)
-endif
 endif
 
 ###X86_32架构	
@@ -97,8 +89,9 @@ ifeq ($(platform), x86_32)
 	ARCH_DEF 		:= -DMAC32
 	arch			:= x86
 	EXTRA_CFLAGS	:= -m32 -arch i386
-	EXTRA_LFLAGS	:= -m32 #-dynamiclib -Wl, -dynamic  #-read_only_relocs
-	EXTRA_AFLAGS	:= -f macho32 -m x86 
+	EXTRA_LFLAGS	:= -m32 -dynamiclib -Wl, -dynamic  #-read_only_relocs
+	EXTRA_AFLAGS	:= -f macho32 -m x86  -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=0 -DHAVE_CPUNOP=0 -DPREFIX
+	EXTRA_LFLAGS_SO := -dynamiclib -Wl, -dynamic
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
@@ -108,8 +101,9 @@ ifeq ($(platform), x86_64)
 	ARCH_DEF := -DMAC64
 	arch		:= x86
 	EXTRA_CFLAGS	:= -m64
-	EXTRA_LFLAGS	:= -m64 -dynamiclib -Wl, -dynamic
-	EXTRA_AFLAGS	:= -f macho64 -m amd64
+	EXTRA_LFLAGS	:= -m64 
+	EXTRA_LFLAGS_SO := -dynamiclib -Wl, -dynamic
+	EXTRA_AFLAGS	:= -f macho64 -m amd64 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0  -DPREFIX
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
@@ -129,7 +123,7 @@ ifeq ($(platform), ios32)
 	arch		:= arm
 	EXTRA_CFLAGS := -arch armv7 -mios-version-min=6.0
 	EXTRA_LFLAGS := -arch armv7 -mios-version-min=6.0 -shared
-	EXTRA_AFLAGS := -arch armv7 -mios-version-min=6.0
+	EXTRA_AFLAGS := -arch armv7 -mios-version-min=6.0 -DPREFIX
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
@@ -146,7 +140,7 @@ ifeq ($(platform), ios64)
 	EXTRA_LFLAGS := -arch arm64 -mios-version-min=6.0 -shared
 	EXTRA_AFLAGS := -arch arm64 -mios-version-min=6.0
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
-	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)	
+	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
 
 ifeq ($(platform), ios_sim32)

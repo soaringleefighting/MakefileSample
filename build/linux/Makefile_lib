@@ -38,7 +38,7 @@ ASMFLAGS := $(DEBUG_FLAGS)
 ASMFLAGS += $(EXTRA_AFLAGS)
  
 LDFLAGS := -Wall -lm
-LDFLAGS += $(EXTRA_LFLAGS)
+LDFLAGS += $(EXTRA_LFLAGS) $(EXTRA_LFLAGS_SO)
 
 ARFLAGS := cr
 
@@ -86,6 +86,18 @@ ifeq ($(platform), arm64)
 C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c
 A_SRCS += $(SRC_PATH)/aarch64/transpose_neon_aarch64.S
 endif
+
+# ARM32位NEON汇编
+ifeq ($(platform), ios32)
+C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c
+A_SRCS += $(SRC_PATH)/arm/transpose_neon_arm.S
+endif
+
+# AARCH64 NEON汇编
+ifeq ($(platform), ios64)
+C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c
+A_SRCS += $(SRC_PATH)/aarch64/transpose_neon_aarch64.S
+endif
 endif
 
 SRCS := $(C_SRCS) $(A_SRCS)
@@ -93,7 +105,7 @@ SRCS := $(C_SRCS) $(A_SRCS)
 OBJS = $(patsubst %.S,%.o, $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS)))))
 
 #编译规则
-all: $(MKDIR) $(LIBS)
+all: clean $(MKDIR) $(LIBS)
 $(MKDIR):
 	-mkdir $(LIB_DIR)
 	
@@ -112,9 +124,9 @@ $(filter %.so, $(LIBS)):$(OBJS)
 %.o:%.asm
 	$(ASM) $< $(ASMFLAGS)  -o $@	
 %.o:%.S
-	$(ASM) $< $(ASMFLAGS) -c -o $@
+	$(CC) $< $(ASMFLAGS) -c -o $@
 %.o:%.s
-	$(ASM) $< $(ASMFLAGS) -c -o $@	
+	$(CC) $< $(ASMFLAGS) -c -o $@	
 		
 clean:
 	-rm	$(OBJS)

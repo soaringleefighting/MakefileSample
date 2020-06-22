@@ -35,7 +35,7 @@
         .arch           armv6
 #endif
 
-.fpu neon
+#.fpu neon
 
 #ifdef PREFIX
 #   define EXTERN_ASM _

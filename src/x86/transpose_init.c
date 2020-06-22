@@ -10,15 +10,15 @@ void transpose_init_x86(unsigned char *dst, unsigned char* src, int width_lowres
 
 	//if (EXTERNAL_SSE2(cpu_flags))
 	{
-		printf("cpu feature sse2!!!\n");
+		//printf("cpu feature sse2!!!\n");
 		ff_x264_lowres_transpose_sse2(dst, src, width_lowres, stride_lowres, lines_lowres);
 	}
 
-//#if ARCH_X86_64
+#if ARCH_X86_64
 	//if (EXTERNAL_AVX2(cpu_flags))
 	{
+		//printf("cpu feature avx2!!!\n");
 		ff_x264_lowres_transpose_avx2(dst, src, width_lowres, stride_lowres, lines_lowres);
-		printf("cpu feature avx2!!!\n");
 	}
-//#endif
+#endif
 }

@@ -42,10 +42,10 @@ ASMFLAGS := $(DEBUG_FLAGS)
 ASMFLAGS += $(EXTRA_AFLAGS)
  
 LDFLAGS := -Wall -lm
-LDFLAGS += $(EXTRA_FLAGS)
+LDFLAGS += $(EXTRA_LFLAGS)
 
 #编译规则
-all:  $(BIN_TARGET)
+all: clean $(BIN_TARGET)
 
 $(BIN_TARGET):	$(OBJS)
 #	$(error $(OBJS))

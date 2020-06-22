@@ -39,7 +39,8 @@ void print(int in0, int in1, int in2, int in3)
 int main(int argc, char* argv[])
 {
 	unsigned int width = 0, height = 0, stride = 0;
-	unsigned int nw = 0, nh = 0, x = 0, y = 0;
+	//unsigned int nw = 0, nh = 0；
+	//unsigned int x = 0, y = 0;
 	unsigned int frame_size_y = 0;
 	//unsigned int frame_size,
 	FILE *fin = NULL, *fou = NULL;
@@ -77,8 +78,8 @@ int main(int argc, char* argv[])
 	//height = (height + 15) & ~15;
 	//frame_size = width*height * 3 / 2;
 	frame_size_y = width * height;
-	nw = width / 16;
-	nh = height / 16;
+	//nw = width / 16;
+	//nh = height / 16;
 
 	src = (unsigned char *)malloc(frame_size_y);
 	if (src == NULL)

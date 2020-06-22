@@ -1,27 +1,47 @@
 #########################################################################
 ## Function: makefile for all platform
-## Platform: linux,arm, ios, macos
+## Platform: linux, arm, ios(ios_pack), macos
 ## Author: 	 lipeng
 ## Modified: 2020.6.18 created
 #########################################################################
-
+all: clean
 ##################################Linux平台#########################################
-make -f Makefile_lib platform=x86_32
-make -f Makefile_demo platform=x86_32 
-
-make -f Makefile_lib platform=x86_64
-make -f Makefile_demo platform=x86_64 
-
-
-
+	make -f Makefile_lib  platform=x86_64 PUREC=0
+	make -f Makefile_demo platform=x86_64 PUREC=0
+	
+	make -f Makefile_lib  platform=x86_32 PUREC=0
+	make -f Makefile_demo platform=x86_32 PUREC=0
+	
 ##################################ARM平台#########################################
-make -f Makefile_lib platform=arm 	CROSS=arm-none-linux-gnueabi-
-make -f Makefile_demo platform=arm  CROSS=arm-none-linux-gnueabi-
+	make -f Makefile_lib platform=arm32  CROSS=arm-linux-androideabi- PUREC=0
+	make -f Makefile_demo platform=arm32 CROSS=arm-linux-androideabi- PUREC=0
 
-make -f Makefile_lib platform=arm 	CROSS=aarch64-linux-gnu-
-make -f Makefile_demo platform=arm  CROSS=aarch64-linux-gnu-
+	make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=0
+	make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=0
+	
+##################################IOS平台#########################################
 
 
+
+
+##################################MAC平台#########################################
+
+
+clean:
+##################################Linux平台#########################################
+	make -f Makefile_lib  platform=x86_64 PUREC=0 clean
+	make -f Makefile_demo platform=x86_64 PUREC=0 clean
+	
+	make -f Makefile_lib  platform=x86_32 PUREC=0 clean
+	make -f Makefile_demo platform=x86_32 PUREC=0 clean
+	
+##################################ARM平台#########################################
+	make -f Makefile_lib platform=arm32  CROSS=arm-linux-androideabi- PUREC=0 clean
+	make -f Makefile_demo platform=arm32 CROSS=arm-linux-androideabi- PUREC=0 clean
+
+	make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=0 clean
+	make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=0 clean
+	
 ##################################IOS平台#########################################
 
 
