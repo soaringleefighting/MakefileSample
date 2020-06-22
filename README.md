@@ -61,3 +61,18 @@ make -f Makefile_demo target_plat=ios platform=ios64  PUREC=1
 
 #### 4.3、脚本方式（shell） 
 ./build_android.sh /home/myshare/android-ndk-r10e
+
+
+### 5、Windows平台
+#### 5.1、方法一（bat）
+cd ./build/windows
+
+启动cmd:
+
+build_vs2010.bat release Win32
+
+build_vs2010.bat release x64
+
+#### 5.2、方法二（MinGW）
+
+待补充
