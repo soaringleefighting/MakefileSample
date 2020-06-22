@@ -34,4 +34,17 @@ make -f Makefile_lib target_plat=ios platform=ios64  PUREC=1
 make -f Makefile_demo target_plat=ios platform=ios64  PUREC=1
 
 ### 4、Android平台
-build_andorid.py F:\software\android-ndk-r10e pure_c=0
+#### 4.1：单独命令方式
+在android-ndk-r10e中执行如下命令：
+（1）带优化编译：./ndk-build -B  -C ~/MakefileSample\build\android  PUREC=0
+（2）纯C编译： 	./ndk-build -B  -C ~/MakefileSample\build\android PUREC=1
+
+说明：android-ndk-r10e下载链接：https://blog.csdn.net/SoaringLee_fighting/article/details/106873454
+
+#### 4.2：脚本方式（Python）
+（1）带优化编译： python build_andorid.py  /home/myshare/android-ndk-r10e  pure_c=0
+（2）纯C编译：	 python build_andorid.py  /home/myshare/android-ndk-r10e  pure_c=1
+
+
+#### 4.3：脚本方式（shell） 
+./build_android.sh /home/myshare/android-ndk-r10e
