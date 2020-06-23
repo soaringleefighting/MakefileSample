@@ -11,13 +11,13 @@ BEGIN
     BLOCK "080904E4"
     BEGIN
       VALUE "CompanyName", "My Company Name"
-      VALUE "FileDescription", "My excellent application"
-      VALUE "FileVersion", "6000"
-      VALUE "InternalName", "my_app"
+      VALUE "FileDescription", "A Makefile Sample Project"
+      VALUE "FileVersion", "1000"
+      VALUE "InternalName", "libAVSample"
       VALUE "LegalCopyright", "My Name"
-      VALUE "OriginalFilename", "my_app.exe"
-      VALUE "ProductName", "My App"
-      VALUE "ProductVersion", "6000"
+      VALUE "OriginalFilename", "libAVSample.exe"
+      VALUE "ProductName", "libAVSample"
+      VALUE "ProductVersion", "1000"
     END
   END
  

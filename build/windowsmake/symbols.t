@@ -1,4 +1,4 @@
-LIBSAMPLE {
-	global: ff_h264_pred_init
+LIBAVSAMPLE {
+	global: libavsample_*
 	local:*;
 };
