@@ -1,0 +1,28 @@
+.PHONY: all
+all:
+	mkdir -p $(shell pwd)/../../out/tmp
+	#armv7
+	rm -rf $(shell pwd)/../../out/Darwin_arm_ios32/libAVSample.a
+	${MAKE} -f ../linux/Makefile_lib target_plat=ios platform=ios32
+	cp $(shell pwd)/../../out/Darwin_arm_ios32/libAVSample.a $(shell pwd)/../../out/tmp/libAVSample_armv7.a
+
+	#armv8
+	rm -rf $(shell pwd)/../../out/Darwin_aarch64_ios64/libAVSample.a
+	${MAKE} -f ../linux/Makefile_lib  target_plat=ios  platform=ios64
+	cp $(shell pwd)/../../out/Darwin_aarch64_ios64/libAVSample.a $(shell pwd)/../../out/tmp/libAVSample_arm64.a
+	
+	#i386
+	rm -rf $(shell pwd)/../../out/Darwin_x86_ios_sim32/libAVSample.a
+	${MAKE} -f ../linux/Makefile_lib  target_plat=ios  platform=ios_sim32
+	cp $(shell pwd)/../../out/Darwin_x86_ios_sim32/libAVSample.a $(shell pwd)/../../out/tmp/libAVSample_i386.a
+	
+	#x86_64
+	rm -rf $(shell pwd)/../../out/Darwin_x86_ios_sim64/libAVSample.a
+	${MAKE} -f ../linux/Makefile_lib  target_plat=ios  platform=ios_sim64
+	cp $(shell pwd)/../../out/Darwin_x86_ios_sim64/libAVSample.a $(shell pwd)/../../out/tmp/libAVSample_x86_64.a
+	
+	-mkdir -p  $(shell pwd)/../../out/ios_univesal_pack/
+	rm -rf $(shell pwd)/../../out/ios_univesal_pack/libAVSample.a
+	lipo -create $(shell pwd)/../../out/tmp/* -output $(shell pwd)/../../out/ios_univesal_pack/libAVSample.a
+	rm -rf $(shell pwd)/../../out/tmp
+	

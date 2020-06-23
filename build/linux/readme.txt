@@ -1,5 +1,7 @@
 Linux系统下编译方法说明：
 
+gas-preprocessor.pl是用于IOS平台下的汇编解释器，来源于x264。
+
 1、Linux平台
 (1) Linux64位：
 纯C编译： 

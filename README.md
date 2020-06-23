@@ -43,6 +43,12 @@ make -f Makefile_lib target_plat=ios platform=ios64  PUREC=1
 
 make -f Makefile_demo target_plat=ios platform=ios64  PUREC=1
 
+(3) IOS Universal Pack：
+
+cd ./build/ios
+
+make -f Makefile_ios_pack
+
 ### 4、Android平台
 #### 4.1、单独命令方式
 在android-ndk-r10e中执行如下命令：
