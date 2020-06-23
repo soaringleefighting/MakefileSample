@@ -11,8 +11,8 @@ RC	:= rc.exe
 
 ifeq ($(platform), win32)
 	EXTRA_CFLAGS := -DWIN32 -DARCH_X86_32 -O2
-	EXTRA_SFLAGS += -f win32 -DPREFIX
-	EXTRA_RCFLAGS := -DWIN32
+	EXTRA_SFLAGS += -f win32 -DPREFIX -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=0 -DHAVE_CPUNOP=0
+	EXTRA_RCFLAGS := -DWIN32 
 	EXTRA_LDFLAGS :=
 	arch := x86
 	LIB_DIR		:= ./../../out/windows_$(arch)_$(platform)
@@ -20,7 +20,7 @@ ifeq ($(platform), win32)
 endif
 ifeq ($(platform), x64)
 	EXTRA_CFLAGS := -DWIN64 -DARCH_X86_64 -O2
-	EXTRA_SFLAGS += -f x64 -DPREFIX
+	EXTRA_SFLAGS += -f x64 -DPREFIX -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0
 	EXTRA_RCFLAGS := -DWIN64
 	EXTRA_LDFLAGS :=
 	arch := x86

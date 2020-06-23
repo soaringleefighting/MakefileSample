@@ -1,7 +1,7 @@
 include config_win.mk
 
 SRC_PATH := ../../src
-OBJS_DIR:= ../../objs
+OBJS_DIR:= ./objs
 
 SRCS := $(wildcard $(SRC_PATH)/*c)
 OBJS := $(subst .c,.o, $(SRCS))
@@ -40,9 +40,16 @@ A_SRCS		+= $(wildcard $(SRC_PATH)/../utils/x86/*.asm)
 
 C_OBJS		:= $(subst .c,.o, $(C_SRCS))  
 A_OBJS		:= $(subst .asm,.o, $(A_SRCS))  
-OBJS		:= $(filter-out %x86inc.o %x86util.o, $(C_OBJS) $(A_OBJS))
-#OBJS_PREFIX	:= $(addprefix $(OBJS_DIR)/, $(notdir $(OBJS)))
+OBJS		:= $(filter-out %x86inc.o %x86util.o %emms.o %cpuid.o, $(C_OBJS) $(A_OBJS))
+OBJS_PREFIX	:= $(addprefix $(OBJS_DIR)/, $(notdir $(OBJS)))
 
+ifeq ($(platform), win32)
+OBJS := $(filter-out %transpose_x86_64.o,  $(OBJS))
+endif
+
+ifeq ($(platform), x64)
+OBJS := $(filter-out %transpose_x86_32.o,  $(OBJS))
+endif
 
 #编译输出
 OUT = -out
@@ -59,9 +66,10 @@ $(filter %.dll, $(LIB_NAME)) : $(OBJS)
 	$(RC) $(RCFLAGS) -fo $(OBJS_DIR)/win_dll_info.res enc_dll.rc
 	$(LD) -dll -def:$(DLL_DEF) -implib: $(DLL_IMPLIB) $(LIBRARY_SHARD) $(OBJS) $(OBJS_DIR)/win_dll_info.res/enc_dll.res $(OUTPDB)
 	
-%.o:%.c
+%.obj:%.c
+#	$(error $(OBJS))
 	$(CC)    $(CFLAGS) $< -Fo $@
-%.o:%asm
+%.o:%.asm
 	$(ASM)  $(ASMFLAGS) $< -o $@
 clean:
 	rm -f $(OBJS) $(LIB_NAME) $(DLL_IMPLIB) $(DLL_PDB) 
