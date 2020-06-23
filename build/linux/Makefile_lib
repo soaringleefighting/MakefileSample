@@ -14,7 +14,7 @@ include config.mk
 
 #指定后缀名和伪目标
 .SUFFIXES: .c,.o,.cpp,.S,.s  
-.PHONY: all,clean
+.PHONY: all,clean,mkdr
 
 #设置相关路径
 SRC_PATH := ./../../src
@@ -105,12 +105,11 @@ SRCS := $(C_SRCS) $(A_SRCS)
 OBJS = $(patsubst %.S,%.o, $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS)))))
 
 #编译规则
-all: clean $(MKDIR) $(LIBS)
-$(MKDIR):
-	-mkdir $(LIB_DIR)
+all: clean mkdr $(LIBS)
+mkdr: #自动创建库目录LIB_DIR
+	if [ ! -d $(LIB_DIR) ];then mkdir -p $(LIB_DIR); echo "$(LIB_DIR) create successfully!"; else echo "$(LIB_DIR) already exists!"; fi
 	
 $(filter %.a, $(LIBS)):$(OBJS)
-	#mkdir $(LIB_DIR)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(filter %.so, $(LIBS)):$(OBJS)

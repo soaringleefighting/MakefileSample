@@ -27,7 +27,7 @@ set VCVARS="%VS100COMNTOOLS%../../VC/vcvarsall.bat"
 set DEVENV="%VS100COMNTOOLS%../IDE/devenv.exe"
 
 @rem 设置解决方案路径
-set SOlUTION="%~dp0Transpose_alg/AVSample.sln"
+set SOlUTION="%~dp0vs2010/AVSample.sln"
 @echo "解决方案..."
 @echo %SOLUTION%
 

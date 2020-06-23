@@ -30,7 +30,7 @@ make -f Makefile_demo platform=arm32  CROSS=arm-linux-androideabi- PUREC=0
 纯C编译：
 make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=1
 make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=1
-NEON编译：
+NEON编译： 
 make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=0
 make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=0
 

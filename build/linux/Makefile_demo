@@ -13,7 +13,7 @@ include config.mk
 
 #指定后缀名和伪目标
 .SUFFIXES: .c,.o,.cpp,.S,.s  
-.PHONY: all,clean
+.PHONY: all,clean,mkdr
 
 #设置相关路径
 vpath %.h ./../../include
@@ -45,11 +45,12 @@ LDFLAGS := -Wall -lm
 LDFLAGS += $(EXTRA_LFLAGS)
 
 #编译规则
-all: clean $(BIN_TARGET)
-
+all: clean mkdr $(BIN_TARGET)
+mkdr: #自动创建输出目录OUT_DIR
+	if [ ! -d $(OUT_DIR) ];then mkdir -p $(OUT_DIR); echo "$(OUT_DIR) create successfully!"; else echo "$(OUT_DIR) already exists!"; fi
+	
 $(BIN_TARGET):	$(OBJS)
 #	$(error $(OBJS))
-#	$(shell mkdir $(OUT_DIR)) 
 	$(CC) -o $@ $(LDFLAGS) $(OBJS) $(LIBS) 
 
 %.o: %.c

@@ -35,11 +35,9 @@
         .arch           armv6
 #endif
 
-<<<<<<< HEAD
-#.fpu neon
-=======
+#ifndef IOS32  // added by soaringlee 2020.6.23
 .fpu neon
->>>>>>> f44ab05a867ce7c72e5be5bdb603ef736774740a
+#endif
 
 #ifdef PREFIX
 #   define EXTERN_ASM _

@@ -88,9 +88,9 @@ ifeq ($(target_plat), mac)
 ifeq ($(platform), x86_32)
 	ARCH_DEF 		:= -DMAC32
 	arch			:= x86
-	EXTRA_CFLAGS	:= -m32 -arch i386
+	EXTRA_CFLAGS	:= -m32 -arch i386 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -m32 -dynamiclib -Wl, -dynamic  #-read_only_relocs
-	EXTRA_AFLAGS	:= -f macho32 -m x86  -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=0 -DHAVE_CPUNOP=0 -DPREFIX
+	EXTRA_AFLAGS	:= -f macho32 -m x86  -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=0 -DHAVE_CPUNOP=0 -DPREFIX $(ARCH_DEF)
 	EXTRA_LFLAGS_SO := -dynamiclib -Wl, -dynamic
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
@@ -100,10 +100,10 @@ endif
 ifeq ($(platform), x86_64)
 	ARCH_DEF := -DMAC64
 	arch		:= x86
-	EXTRA_CFLAGS	:= -m64
+	EXTRA_CFLAGS	:= -m64 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -m64 
 	EXTRA_LFLAGS_SO := -dynamiclib -Wl, -dynamic
-	EXTRA_AFLAGS	:= -f macho64 -m amd64 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0  -DPREFIX
+	EXTRA_AFLAGS	:= -f macho64 -m amd64 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0  -DPREFIX $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
@@ -121,9 +121,9 @@ ifeq ($(platform), ios32)
 	
 	ARCH_DEF	:= -DIOS32
 	arch		:= arm
-	EXTRA_CFLAGS := -arch armv7 -mios-version-min=6.0
+	EXTRA_CFLAGS := -arch armv7 -mios-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS := -arch armv7 -mios-version-min=6.0 -shared
-	EXTRA_AFLAGS := -arch armv7 -mios-version-min=6.0 -DPREFIX
+	EXTRA_AFLAGS := -arch armv7 -mios-version-min=6.0 -DPREFIX $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
@@ -136,9 +136,9 @@ ifeq ($(platform), ios64)
 	
 	ARCH_DEF	:= -DIOS64
 	arch		:= aarch64
-	EXTRA_CFLAGS := -arch arm64 -mios-version-min=6.0
+	EXTRA_CFLAGS := -arch arm64 -mios-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS := -arch arm64 -mios-version-min=6.0 -shared
-	EXTRA_AFLAGS := -arch arm64 -mios-version-min=6.0
+	EXTRA_AFLAGS := -arch arm64 -mios-version-min=6.0 $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
@@ -151,9 +151,9 @@ ifeq ($(platform), ios_sim32)
 	
 	ARCH_DEF	 :=
 	arch		 := x86
-	EXTRA_CFLAGS := -arch i386 -mios-simulator-version-min=6.0
+	EXTRA_CFLAGS := -arch i386 -mios-simulator-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS := -arch i386 -mios-simulator-version-min=6.0 -Wl, -Bsymbolic-functions -read_only_relocs suppress
-	EXTRA_AFLAGS := -f macho32 -m x86
+	EXTRA_AFLAGS := -f macho32 -m x86 $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
@@ -166,9 +166,9 @@ ifeq ($(platform), ios_sim64)
 	
 	ARCH_DEF	 :=
 	arch		 := x86
-	EXTRA_CFLAGS := -arch x86_64 -mios-simulator-version-min=6.0
+	EXTRA_CFLAGS := -arch x86_64 -mios-simulator-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS := -arch x86_64 -mios-simulator-version-min=6.0
-	EXTRA_AFLAGS := -f macho64 -m amd64
+	EXTRA_AFLAGS := -f macho64 -m amd64 $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
