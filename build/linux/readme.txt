@@ -69,3 +69,7 @@ make -f Makefile_demo target_plat=ios platform=ios64  PUREC=1
 汇编编译：
 make -f Makefile_lib target_plat=ios platform=ios64 PUREC=0
 make -f Makefile_demo target_plat=ios platform=ios64  PUREC=0
+
+(3) IOS Universal Pack：
+cd ./build/ios
+make -f Makefile_ios_pack

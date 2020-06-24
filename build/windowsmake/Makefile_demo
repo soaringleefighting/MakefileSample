@@ -2,6 +2,7 @@ include config_win.mk
 
 DEMO_SRC_PATH = ../../demo
 OBJS_DIR:= ./
+SOURCE_PATH := ./resources
 
 vpath %.c $(DEMO_SRC_PATH)
 vpath %.h $(DEMO_SRC_PATH)
@@ -29,8 +30,8 @@ mkdr: #自动创建库目录LIB_DIR
 	if [ ! -d $(OUT_DIR) ];then mkdir -p $(OUT_DIR); echo "$(OUT_DIR) create successfully!"; else echo "$(OUT_DIR) already exists!"; fi
 	
 $(TARGET_DEMO):$(DEMO_OBJS)
-	$(RC) $(RCFLAGS) -fo $(OBJS_DIR)/win_dll_info.res win_dll_info.rc
-	$(LD) $(DEMO_LDFLAGS) -PDB:$(OUT_DIR)/libAVSample.pdb -debug -out:$@ $(DEMO_OBJS_PREFIX)  $(OBJS_DIR)/win_dll_info.res  $(LIB_NAME) 
+	$(RC) $(RCFLAGS) -fo $(SOURCE_PATH)/win_dll_info.res $(SOURCE_PATH)/win_dll_info.rc
+	$(LD) $(DEMO_LDFLAGS) -PDB:$(OUT_DIR)/libAVSample.pdb -debug -out:$@ $(DEMO_OBJS_PREFIX)  $(SOURCE_PATH)/win_dll_info.res  $(LIB_NAME) 
 	
 %.obj:%.c
 	echo $(DEMO_OBJS_PREFIX)
