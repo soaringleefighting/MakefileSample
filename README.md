@@ -81,4 +81,10 @@ build_vs2010.bat release x64
 
 #### 5.2、方法二（MinGW）
 
-待补充
+首先启动minGW和VC环境，运行msys_vs2010_win32.bat或msys_vs2010_win64.bat，
+
+cd ./build/windowsmake
+
+make -f Makefile_demo platform=win32
+
+make -f Makefile_demo platform=x64

@@ -1,2 +1,2 @@
 EXPORTS
-libavsample_transpose_c
+    libavsample_transpose_c

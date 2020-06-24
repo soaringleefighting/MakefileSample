@@ -1,17 +1,13 @@
 include config_win.mk
 
 SRC_PATH := ../../src
-OBJS_DIR:= ./objs
+OBJS_DIR:= ./
 
-SRCS := $(wildcard $(SRC_PATH)/*c)
-OBJS := $(subst .c,.o, $(SRCS))
 LIB_NAME := $(LIB_DIR)/libAVSample.lib $(LIB_DIR)/libAVSample.dll
-
-VER = xxx.ver
 
 DLL_EXPORT_SYMBOL	:= ./symbols.t
 DLL_DEF	:= ./win_dll_symexp.def  					  #模块定义文件def
-DLL_IMPLIB	:= $(LIB_DIR)/libAVSample_imp.lib #引导库
+DLL_IMPLIB	:= $(LIB_DIR)/libAVSample_imp.lib 		  #引导库
 DLL_PDB	:= $(LIB_DIR)/libAVSample.pdb
 OUT_PDB	:= -debug -PDB:$(DLL_PDB)
 
@@ -38,39 +34,45 @@ C_SRCS+= $(wildcard $(SRC_PATH)/../utils/*.c)
 A_SRCS		:= $(wildcard $(SRC_PATH)/x86/*.asm) 
 A_SRCS		+= $(wildcard $(SRC_PATH)/../utils/x86/*.asm) 
 
-C_OBJS		:= $(subst .c,.o, $(C_SRCS))  
-A_OBJS		:= $(subst .asm,.o, $(A_SRCS))  
-OBJS		:= $(filter-out %x86inc.o %x86util.o %emms.o %cpuid.o, $(C_OBJS) $(A_OBJS))
-OBJS_PREFIX	:= $(addprefix $(OBJS_DIR)/, $(notdir $(OBJS)))
+C_OBJS		:= $(subst .c,.obj, $(C_SRCS))  
+A_OBJS		:= $(subst .asm,.obj, $(A_SRCS))  
+OBJS		:= $(filter-out %x86inc.obj %x86util.obj %emms.obj %cpuid.obj, $(C_OBJS) $(A_OBJS))
 
 ifeq ($(platform), win32)
-OBJS := $(filter-out %transpose_x86_64.o,  $(OBJS))
+OBJS := $(filter-out %transpose_x86_64.obj,  $(OBJS))
 endif
 
 ifeq ($(platform), x64)
-OBJS := $(filter-out %transpose_x86_32.o,  $(OBJS))
+OBJS := $(filter-out %transpose_x86_32.obj,  $(OBJS))
 endif
+
+OBJS_PREFIX	:= $(addprefix $(OBJS_DIR)/, $(notdir $(OBJS)))
 
 #编译输出
 OUT = -out
-LIBRARY_STATIC = $(OUT):$(filter %.lib, $LIB_NAME))
-LIBRARY_SHARD = $(OUT):$(filter %.dll, $LIB_NAME))
+LIBRARY_STATIC := $(OUT):$(filter %.lib, $(LIB_NAME))
+LIBRARY_SHARD := $(OUT):$(filter %.dll, $(LIB_NAME))
+#$(error $(OBJS_PREFIX))
 
-.PHONY: all clean
-all: $(LIB_NAME)
-$(filter %.lib, $(LIB_NAME)) : $(OBJS)
-	$(AR) $(LIBRARY_STATIC) $(OBJS)
-$(filter %.dll, $(LIB_NAME)) : $(OBJS)	
-#	makedef $(VER) $(OBJS) > $(DLL_DEF)	
-#	SubWCRev ../../ ./win_dll_info.t ./win_dll_info.rc
-	$(RC) $(RCFLAGS) -fo $(OBJS_DIR)/win_dll_info.res enc_dll.rc
-	$(LD) -dll -def:$(DLL_DEF) -implib: $(DLL_IMPLIB) $(LIBRARY_SHARD) $(OBJS) $(OBJS_DIR)/win_dll_info.res/enc_dll.res $(OUTPDB)
+.PHONY: all clean mkdr
+all: clean mkdr $(LIB_NAME)
+
+mkdr: #自动创建库目录LIB_DIR
+	if [ ! -d $(LIB_DIR) ];then mkdir -p $(LIB_DIR); echo "$(LIB_DIR) create successfully!"; else echo "$(LIB_DIR) already exists!"; fi
 	
+$(filter %.lib, $(LIB_NAME)) : $(OBJS)
+	$(AR) $(LIBRARY_STATIC) $(OBJS_PREFIX)
+$(filter %.dll, $(LIB_NAME)) : $(OBJS)	
+	makedef $(DLL_EXPORT_SYMBOL) $(OBJS_PREFIX) > $(DLL_DEF)	
+#	SubWCRev ../../ ./win_dll_info.t ./win_dll_info.rc
+	$(RC) $(RCFLAGS) -fo $(OBJS_DIR)/win_dll_info.res win_dll_info.rc
+	$(LD) -dll -def:$(DLL_DEF)  -implib:$(DLL_IMPLIB)  $(LIBRARY_SHARD) $(OBJS_PREFIX) $(OBJS_DIR)/win_dll_info.res $(OUT_PDB)
+
 %.obj:%.c
 #	$(error $(OBJS))
-	$(CC)    $(CFLAGS) $< -Fo $@
-%.o:%.asm
-	$(ASM)  $(ASMFLAGS) $< -o $@
+	$(CC) $(CFLAGS) -Fo $@ -c $< 		
+%.obj:%.asm
+	$(ASM) $(ASMFLAGS) $< #	-o $@
 clean:
-	rm -f $(OBJS) $(LIB_NAME) $(DLL_IMPLIB) $(DLL_PDB) 
+	rm -f $(OBJS) $(OBJS_PREFIX) $(LIB_NAME) $(DLL_IMPLIB) $(DLL_PDB) 
 

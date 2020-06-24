@@ -1,13 +1,16 @@
 include config_win.mk
 
 DEMO_SRC_PATH = ../../demo
+OBJS_DIR:= ./
 
 vpath %.c $(DEMO_SRC_PATH)
 vpath %.h $(DEMO_SRC_PATH)
 
 DEMO_SRCS := $(wildcard $(DEMO_SRC_PATH)/*.c)
 
-DEMO_OBJS := $(patsubst %.c,%.o,$(DEMO_SRCS))
+DEMO_OBJS := $(patsubst %.c,%.obj,$(DEMO_SRCS))
+
+DEMO_OBJS_PREFIX := $(addprefix $(OBJS_DIR)/, $(notdir $(DEMO_OBJS)))
 
 DEMO_INC := $(DEMO_SRC_PATH)
 
@@ -15,26 +18,28 @@ DEMO_CFLAGS := $(EXTRA_CFLAGS)
 DEMO_CFLAGS += -I$(DEMO_INC) 
 
 LIB_NAME := $(LIB_DIR)/libAVSample.lib
-DEMO_LDFLAGS := -libpath:$(OUT_DIR)
+DEMO_LDFLAGS := -libpath:$(LIB_DIR)
 
-TARGET_DEMO= $(OUT_DIR)/demo.exe
+TARGET_DEMO= $(OUT_DIR)/libAVSample_demo.exe
 
-.PHONY: clean all
-all: clean $(LIB_NAME) $(TARGET_DEMO)
+.PHONY: clean all mkdr
+all: clean mkdr  $(LIB_NAME) $(TARGET_DEMO)
 
-$(TARGET_DEMO):$(DEMO_OBJS)
-	echo $(DEMO_OBJS)
-	$(LD) $(DEMO_LDFLAGS) -PDB:$(OUT_DIR)/demo.pdb -debug -out $@ $(DEMO_OBJS) $(LIB_NAME) 
+mkdr: #自动创建库目录LIB_DIR
+	if [ ! -d $(OUT_DIR) ];then mkdir -p $(OUT_DIR); echo "$(OUT_DIR) create successfully!"; else echo "$(OUT_DIR) already exists!"; fi
 	
-%.o:%.c
-	echo $(DEMO_OBJS)
+$(TARGET_DEMO):$(DEMO_OBJS)
+	$(RC) $(RCFLAGS) -fo $(OBJS_DIR)/win_dll_info.res win_dll_info.rc
+	$(LD) $(DEMO_LDFLAGS) -PDB:$(OUT_DIR)/libAVSample.pdb -debug -out:$@ $(DEMO_OBJS_PREFIX)  $(OBJS_DIR)/win_dll_info.res  $(LIB_NAME) 
+	
+%.obj:%.c
+	echo $(DEMO_OBJS_PREFIX)
 	$(CC) $(DEMO_CFLAGS) -c -Fo $@ $<
 	
 $(LIB_NAME):
-	echo $(DEMO_OBJS)
 	make -C ./ -f Makefile_lib
 	
 clean:
-	rm -rf $(DEMO_OBJS) $(TARGET_DEMO) 
+	rm -rf $(DEMO_OBJS) $(DEMO_OBJS_PREFIX) $(TARGET_DEMO) 
 	make -C ./ -f Makefile_lib clean
 
