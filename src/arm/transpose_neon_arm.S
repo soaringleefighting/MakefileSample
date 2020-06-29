@@ -1,4 +1,4 @@
-#include "asm.S"
+#include "../../utils/arm/asm.S"
 // print macro definition
 .macro print_m in1=r0, in2=d0
        push {r0-r3, lr}
