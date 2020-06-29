@@ -32,10 +32,11 @@ def process(ndk_dir, android_dir, pure_c, delimiter):
 	out_sha_lib = android_dir + delimiter + 'out' + delimiter
 	share_lib_dir = android_dir + delimiter + 'obj' + delimiter + 'local' + delimiter
 	out_sta_lib = android_dir + delimiter + 'out' + delimiter
+        final_out_lib= android_dir + delimiter + '..' + delimiter + '..' + delimiter + 'out' + delimiter + 'android' + delimiter
 	if isWindowsSys():
 		cpy = "copy "
 	else:
-		cpy = "cp "
+		cpy = "cp -rf "
 		
 	opt = pure_c.split('=')[1]
 	# "=================CLEAR OUTPUT DIR========================="
@@ -169,6 +170,71 @@ def process(ndk_dir, android_dir, pure_c, delimiter):
 	print(cmd)
 	os.system(cmd)
     
+    # "==================COPY build/android/OUT To OUT ===================="
+        ### armeabi-v7a
+        #outdir = final_out_lib + "armeabi-v7a"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "armeabi-v7a" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+
+        ### arm64-v8a
+        #outdir = final_out_lib + "arm64-v8a"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "arm64-v8a" + delimiter + "  " + final_out_lib 
+        print(cmd)
+        os.system(cmd)
+
+
+        ### armeabi
+        #outdir = final_out_lib + "armeabi"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "armeabi" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+
+        ### x86
+        #outdir = final_out_lib + "x86"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "x86" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+
+        ### x86_64
+        #outdir = final_out_lib + "x86_64"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "x86_64" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+
+        ### mips
+        #outdir = final_out_lib + "mips"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "mips" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+
+        ### mips64
+        #outdir = final_out_lib + "mips64"
+        #isExist = os.path.exists(outdir)
+	#if(not isExist):
+        #        os.mkdir(outdir)
+        cmd = cpy + out_sta_lib + "mips64" + delimiter + "  " + final_out_lib
+        print(cmd)
+        os.system(cmd)
+        
 ##############################main函数入口######################
 if __name__ == '__main__':
 	if(len(argv) < 3):
