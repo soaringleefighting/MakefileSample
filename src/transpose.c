@@ -11,9 +11,11 @@ void libavsample_transpose_c(unsigned char *dst, unsigned char *src, int width_l
 /**
  * Set transpose function pointers.
  */
-void transpose_init(unsigned char *dst, unsigned char *src, int width_lowres, int stride_lowres, int lines_lowres)
+void transpose_init()
 {
 	transpose = libavsample_transpose_c;
+
+	// 支持根据不同平台设置汇编函数指针
 // 	if (ARCH_AARCH64)
 // 	{
 // 		transpose_init_aarch64(dst, src, width_lowres, stride_lowres, lines_lowres);

@@ -123,6 +123,9 @@ int main(int argc, char* argv[])
 
 	while (fread(src, 1, frame_size_y, fin) == frame_size_y)
 	{
+		//函数指针初始化
+		transpose_init(dst, src, width, width, height);
+
 		// 亮度分量转置 Y
 #if HAS_NEON || X86_ASM
 #if  HAS_NEON
@@ -169,7 +172,7 @@ int main(int argc, char* argv[])
 #endif
 #else
 		os_sdk_starttimer(&t_os_timer);
-		libavsample_transpose_c(dst, src, width, width, height);
+		transpose(dst, src, width, width, height);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 #endif
 
@@ -183,11 +186,11 @@ int main(int argc, char* argv[])
 		// 色度分量转置
 		// U
 		fread(src_uv, 1, frame_size_y/4, fin);
-		libavsample_transpose_c(dst_uv, src_uv, width/2, width/2 ,height/2);
+		transpose(dst_uv, src_uv, width/2, width/2 ,height/2);
 		fwrite(dst_uv, 1, frame_size_y/4, fou);
 		//V
 		fread(src_uv, 1, frame_size_y/4, fin);
-		libavsample_transpose_c(dst_uv, src_uv, width/2, width/2 ,height/2);
+		transpose(dst_uv, src_uv, width/2, width/2 ,height/2);
 		fwrite(dst_uv, 1, frame_size_y/4, fou);
 #else
 		fseek(fin, frame_size_y/2, SEEK_CUR); // 跳过色度分量的处理
