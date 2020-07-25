@@ -26,5 +26,8 @@
     <ClInclude Include="..\..\..\..\demo\os_time_sdk.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\include\libavsample.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

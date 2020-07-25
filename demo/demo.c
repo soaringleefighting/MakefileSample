@@ -1,7 +1,7 @@
 #include "stdio.h"
 #include "stdlib.h"
 #include "os_time_sdk.h"
-#include "../src/transpose.h"	
+#include "libavsample.h"
 
 #define  HAS_NEON	   (0)		// 0表示纯C，1表示arm neon优化
 #define  X86_ASM	   (0)		// 1:开启x86 assembly  0:不开启x86 assembly
@@ -118,14 +118,13 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 
+	//函数指针初始化
+	libav_init(dst, src, width, width, height);
 
 	os_sdk_inittimer(&t_os_timer);
 
 	while (fread(src, 1, frame_size_y, fin) == frame_size_y)
 	{
-		//函数指针初始化
-		transpose_init(dst, src, width, width, height);
-
 		// 亮度分量转置 Y
 #if HAS_NEON || X86_ASM
 #if  HAS_NEON
@@ -172,7 +171,7 @@ int main(int argc, char* argv[])
 #endif
 #else
 		os_sdk_starttimer(&t_os_timer);
-		transpose(dst, src, width, width, height);
+		libav_process(dst, src, width, width, height);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 #endif
 
@@ -186,11 +185,11 @@ int main(int argc, char* argv[])
 		// 色度分量转置
 		// U
 		fread(src_uv, 1, frame_size_y/4, fin);
-		transpose(dst_uv, src_uv, width/2, width/2 ,height/2);
+		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
 		fwrite(dst_uv, 1, frame_size_y/4, fou);
 		//V
 		fread(src_uv, 1, frame_size_y/4, fin);
-		transpose(dst_uv, src_uv, width/2, width/2 ,height/2);
+		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
 		fwrite(dst_uv, 1, frame_size_y/4, fou);
 #else
 		fseek(fin, frame_size_y/2, SEEK_CUR); // 跳过色度分量的处理
@@ -207,6 +206,8 @@ int main(int argc, char* argv[])
 	time_avg = time_avg/frame_num;
 	printf("%d frames completed!! purec average time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_avg_c, time_avg);
 	
+	libav_uninit();
+
 	free(src);
 	src = NULL;
 	free(dst);

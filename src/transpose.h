@@ -7,8 +7,7 @@
 void (*transpose)(unsigned char *dst, unsigned char *src, int width_lowres, 
 					int stride_lowres, int lines_lowres);
 
-void transpose_init(unsigned char *dst, unsigned char *src, int width_lowres, 
-					int stride_lowres, int lines_lowres);
+void transpose_init();
 
 
 void libavsample_transpose_c(unsigned char *dst, unsigned char *src, int width_lowres,
