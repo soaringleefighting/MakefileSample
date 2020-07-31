@@ -8,7 +8,10 @@
 
 #define ENABLE_CHROMA  (1)		// 1: 使能色度   0:只处理亮度
 
-	
+// 注意:OPTION_PARSE_BASE和OPTION_PARSE_LINUX只能打开一个，且OPTION_PARSE_LINUX只能用于LINUX平台下
+#define OPTION_PARSE_BASE   (1) // 简单的命令行参数解析方式，使用strncmp
+#define OPTION_PARSE_LINUX	(1)	// LINUX下的命令行参数解析方式，使用getopt
+
 /*************调试打印函数***************/
 // dx寄存器打印函数
 void cprintf(unsigned char *srcu8)
@@ -34,6 +37,21 @@ void print(int in0, int in1, int in2, int in3)
 	printf("\n");	
 }
 
+#if OPTION_PARSE_BASE
+// 打印帮助函数
+int print_help(char* str)
+{
+	printf("%s \nUsage: \n", str);
+	printf(" -help : this help \n");
+	printf(" -i    : input yuv file \n");
+	printf(" -o    : output yuv file \n");
+	printf(" -wt   : width \n");
+	printf(" -ht   : height \n");
+	printf(" -fr   : framenum \n");
+	printf("Example: demo -i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100\n");
+	return 0;
+}
+#endif
 
 /****************主函数入口**********************************/
 int main(int argc, char* argv[])
@@ -49,18 +67,75 @@ int main(int argc, char* argv[])
 	unsigned char *src_uv = NULL, *dst_uv  = NULL;
 #endif
 	int frame_num = 0, framenum = 0;
-	char outname[512] = { 0, };
 	
 	os_timer  t_os_timer = {0};
 	double  time_count = 0.0, time_count_c = 0.0;
 	double  time_avg = 0.0, time_avg_c = 0.0;
-	//int i = 0;
+	int i = 0;
 	
+#if OPTION_PARSE_BASE
+	//采用strncmp实现命令行参数解析
+	char *input_str, *output_str;
+	if (argc >= 11)
+	{
+	    i= 0;
+		for (i = 1; i < argc; ++i)
+		{
+			if (!strncmp(argv[i], "-help", 5))  // help
+			{
+				print_help(argv[0]);
+			}
+			else if (!strncmp(argv[i], "-i", 2)) // input
+			{
+				input_str = argv[++i];
+			}
+			else if (!strncmp(argv[i], "-o", 2)) // output
+			{
+				output_str = argv[++i];
+			}
+			else if (!strncmp(argv[i], "-wt", 3)) // width
+			{
+				width = atoi(argv[++i]);
+			}
+			else if (!strncmp(argv[i], "-ht", 3)) // height
+			{
+				height = atoi(argv[++i]);
+			}
+			else if (!strncmp(argv[i], "-fr", 3)) // framenum
+			{
+				framenum = atoi(argv[++i]);
+			}
+		}
+	}
+	else
+	{
+		print_help(argv[0]);
+		return -1;
+	}
+
+	fin = fopen(input_str, "rb");
+	if (fin == NULL)
+	{
+		printf("error:open %s fail\n", input_str);
+		return -1;
+	}
+
+	fou = fopen(output_str, "wb");
+	if (fou == NULL)
+	{
+		printf("error: open %s fail\n", output_str);
+		return -1;
+	}
+
+#else
+	char outname[512] = { 0, };
+
 	if (argc != 6)
 	{
 		printf("\nUsage:demo.exe input.yuv output.yuv width height framenum.\n\n");
 		return -1;
 	}
+
 	fin = fopen(argv[1], "rb");
 	if (fin == NULL)
 	{
@@ -73,14 +148,26 @@ int main(int argc, char* argv[])
 	width = atoi(argv[3]);
 	height = atoi(argv[4]);
 	framenum = atoi(argv[5]);
+
+	fou = fopen(outname, "wb");
+	if (fou == NULL)
+	{
+		printf("error: open %s fail\n", outname);
+		return -1;
+	}
+#endif
+
+#if defined(__GNUC__)  // 针对LINUX平台
+#if OPTION_PARSE_LINUX
+// 采用getopt和getopt_long实现命令行参数解析
+
+#endif
+#endif
 	
 	stride = (width + 15) & ~15;  //对齐到16边界
-	//height = (height + 15) & ~15;
-	//frame_size = width*height * 3 / 2;
 	frame_size_y = width * height;
-	//nw = width / 16;
-	//nh = height / 16;
 
+	// 输入图像和输出图像内存分配
 	src = (unsigned char *)malloc(frame_size_y);
 	if (src == NULL)
 	{
@@ -111,15 +198,8 @@ int main(int argc, char* argv[])
 	}
 #endif
 
-	fou = fopen(outname, "wb");
-	if (fou == NULL)
-	{
-		printf("error: open %s fail\n", outname);
-		return -1;
-	}
-
 	//函数指针初始化
-	libav_init(dst, src, width, width, height);
+	libav_init();
 
 	os_sdk_inittimer(&t_os_timer);
 
@@ -134,7 +214,7 @@ int main(int argc, char* argv[])
 		time_count = os_sdk_stoptimer(&t_os_timer);
 
 		os_sdk_starttimer(&t_os_timer);
-		libavsample_transpose_c(dst, src, width, width, height);
+		libav_process(dst, src, width, width, height);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 
 #endif
@@ -166,7 +246,7 @@ int main(int argc, char* argv[])
 		time_count = os_sdk_stoptimer(&t_os_timer);
 
 		os_sdk_starttimer(&t_os_timer);
-		libavsample_transpose_c(dst, src, width, width, height);
+		libav_process(dst, src, width, width, height);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 #endif
 #else
@@ -221,6 +301,10 @@ int main(int argc, char* argv[])
 
 	fclose(fin);
 	fclose(fou);
+
+#if _WIN32
+	system("pause");
+#endif
 	
   	return 0;
 }

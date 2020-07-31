@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>park_joy_420_720p50.yuv out_sse2.yuv 1280 720 100</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>G:\Work\Codecs\YUV\720P</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>F:\YUV_sequences</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>
