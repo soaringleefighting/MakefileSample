@@ -8,7 +8,11 @@
 #define SG_COMMIT_HASH	("1bd400a85760d4406150d0f6683991062cdbba88")  
 #define SG_COMMIT_DATE	("2020-08-0119:55:17+0800")  
 #define SG_VERSION		(SG_COMMIT_HASH)  
-#else  
+#endif
+
+#ifdef ANDROID
+#define SG_VERSION		(1000) //TODO: support git version for android platform
+#else
 #define SG_VERSION		(GIT_VERSION)  
 #endif  
 #endif  
