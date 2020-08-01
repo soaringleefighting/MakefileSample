@@ -98,7 +98,7 @@
       </Outputs>
     </CustomBuild>
     <CustomBuildStep>
-      <Command>sync_version.bat</Command>
+      <Command>../../sync_version.bat</Command>
       <Message>Sync git info version</Message>
       <Outputs>nonexistentfile</Outputs>
     </CustomBuildStep>
@@ -148,6 +148,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\src\transpose.h" />
+    <ClInclude Include="..\..\..\..\src\version.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\src\x86\transpose_x86_32.asm">

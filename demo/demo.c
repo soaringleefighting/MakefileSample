@@ -27,7 +27,7 @@
 // 两个宏都设置为1时，走getopt分支。
 #define OPTION_PARSE_BASE   (1) // 简单的命令行参数解析方式，使用strncmp
 // ./demo -i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100
-#define OPTION_PARSE_LINUX	(1)	// LINUX下的命令行参数解析方式，使用getopt
+#define OPTION_PARSE_LINUX	(0)	// LINUX下的命令行参数解析方式，使用getopt
 // 长选项: ./demo  --input SlideEditing_1280x720_30.yuv --output out.yuv --width 1280 --height 720 --framenum 100
 // 短选项: ./demo  -i SlideEditing_1280x720_30.yuv -o out.yuv -w 1280 -t 720 -n 10
 
@@ -129,9 +129,6 @@ int main(int argc, char* argv[])
 	os_timer  t_os_timer = {0};
 	double  time_count = 0.0, time_count_c = 0.0;
 	double  time_avg = 0.0, time_avg_c = 0.0;
-
-	// 支持版本获取
-	printf("[Current library info] %s.\n", libav_getversion());
 
 //*******1.命令行输入参数解析*********/
 #if !OPTION_PARSE_LINUX	
@@ -284,6 +281,9 @@ int main(int argc, char* argv[])
 #endif
 #endif
 	
+	// 支持版本获取
+	printf("[Current library info] %s.\n", libav_getversion());
+
 	frame_size_y = width * height;
 
 	//*******2.输入图像和输出图像内存分配*********/

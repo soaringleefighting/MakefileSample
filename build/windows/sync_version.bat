@@ -1,5 +1,5 @@
 echo off
-
+chcp 65001
 SetLocal EnableDelayedExpansion
 
 echo 运行路径: %cd%
@@ -14,8 +14,8 @@ set variable_file=%scriptPath%temp_variable.txt
 echo %variable_file%
 echo. 2>%variable_file%
 
-
-git log -1 --pretty=format:"%%D%%n%%H%%n%%ci%%n" >> %variable_file%
+git branch >> %variable_file%
+git log -1 --pretty=format:"%%n%%H%%n%%ci%%n" >> %variable_file%
 
 set branch_name="NullBranchName"
 set commit_hash="NullCommitHash"
@@ -48,8 +48,10 @@ if exist %variable_file% del %variable_file%
 
 echo 生成最新版本信息文件
 set new_revision_file="%scriptPath%RevisionNew.h"
+@rem echo %new_revision_file%
+
 echo. 2>%new_revision_file%
-for /f "tokens=*" %%i in ('type "%versionPath%version.h"') do (
+for /f "tokens=*" %%i in ('type "%scriptPath%\Revision.t"') do (
 	set str=%%i
 	set str=!str:$SG_BRANCH_NAME$=%branch_name%!
 	set str=!str:$SG_COMMIT_HASH$=%commit_hash%!
@@ -60,7 +62,7 @@ for /f "tokens=*" %%i in ('type "%versionPath%version.h"') do (
 
 
 echo 比较新旧版本信息文件
-set old_revision_file=%scriptPath%Revision.h
+set old_revision_file=%versionPath%\version.h
 if not exist %old_revision_file% ( 
 	echo 不存在旧版本信息文件，直接拷贝新文件
 	copy /Y %new_revision_file% %old_revision_file%
