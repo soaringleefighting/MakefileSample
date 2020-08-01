@@ -50,8 +50,8 @@ ifeq ($(platform), x86_32)
 	ARCH_DEF	:= -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch		:= x86
 	EXTRA_CFLAGS := -m32 $(ARCH_DEF)
-	EXTRA_LFLAGS := -m32 -shared
-	EXTRA_FLAGS  := -m32
+	EXTRA_LFLAGS := -m32
+	EXTRA_LFLAGS_SO  := -shared
 	EXTRA_AFLAGS := -m x86 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=0 -DHAVE_CPUNOP=0 -f elf32 $(ARCH_DEF)
 	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)
@@ -63,8 +63,8 @@ ifeq ($(platform), x86_64)
 	ARCH_DEF	:= -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch		:= x86
 	EXTRA_CFLAGS := -m64 $(ARCH_DEF)
-	EXTRA_LFLAGS := -m64 -shared 
-	EXTRA_FLAGS  := -m64
+	EXTRA_LFLAGS := -m64 
+	EXTRA_LFLAGS_SO  := -shared
 	EXTRA_AFLAGS := -m amd64 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0 -f elf64 $(ARCH_DEF)
 	LIB_DIR		:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR		:= ./../../bin/$(OS)_$(arch)_$(platform)
@@ -176,6 +176,9 @@ endif
 endif ##ifeq ($(target_plat), ios)
 
 endif
+
+######GIT版本获取#########
+GIT=$(shell git rev-list -n 1 HEAD | cut -c 1-7)
 
 ######汇编宏的配置#######
 ifeq ($(PUREC), 0)

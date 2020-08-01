@@ -2,6 +2,7 @@
 #define X264_LOWRES_TRANSPOSE_H
 
 #include <stdio.h>
+#include <string.h>
 
 // 函数指针的声明
 void (*transpose)(unsigned char *dst, unsigned char *src, int width_lowres, 

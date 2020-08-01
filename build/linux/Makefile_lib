@@ -29,7 +29,7 @@ V_PATH += $(SRC_PATH)
 vpath %.h $(V_PATH)
 
 #设置编译的相关参数
-CFLAGS := $(DEBUG_FLAGS)  #-Wall   
+CFLAGS := $(DEBUG_FLAGS) -DGitversion_$(GIT) -DGIT_VERSION=\"$(GIT)\" #-Wall   
 CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
 
 CXXFLAGS := -Wall 
@@ -47,7 +47,8 @@ LIBS	:= $(LIB_PATH)/$(LIB_NAME).a $(LIB_PATH)/$(LIB_NAME).so
 #获取需要编译的OBJS
 #方法1：指定文件
 #以下获取OBJS文件的方式适用于含有少量文件的编译
-C_SRCS = $(SRC_PATH)/transpose.c
+C_SRCS = $(SRC_PATH)/transpose.c  \
+	 $(SRC_PATH)/libavsample.c
 	      
 
 #方法2：遍历文件夹

@@ -40,4 +40,14 @@ int libav_process(unsigned char *dst, unsigned char *src, int width_lowres,
 //************************************************
 int libav_uninit();
 
+
+//***********************************************
+// Funtion: libav_getversion
+// Parameter: none
+// Usage: get current version of library
+// Modified: lipeng created at August 1 2020
+//************************************************
+char* libav_getversion();
+
+
 #endif /*LIBAVSAMPLE_H*/
