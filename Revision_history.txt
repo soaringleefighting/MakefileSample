@@ -1,25 +1,25 @@
-Revision History：
+[Revision History]
 
-１. 2020.6.18  第一版v1
-Feature：
+１. 2020.6.18 第一版v1.0
+Features：
 （1）支持windows,linux(ARM),mac,ios,android五大平台的脚本化编译；
 （2）支持x86纯汇编和arm neon纯汇编的编译。
 
-2. 2020.6.22 第二版v2
-Feature：
+2. 2020.6.22 第二版v2.0
+Features：
 （1）安装ARM32位和ARM64位交叉编译器，验证ARM平台纯C和汇编的编译。
 （2）验证通过MAC平台和IOS平台的编译，支持汇编的编译。 
 
 
-3. 2020.6.23 第三版v3
-Feature：
+3. 2020.6.23 第三版v3.0
+Features：
 （1）支持Windows平台采用make编译的方式（windowsmake），借助MinGW。 
 （2）makefile中自动生成out和bin目录文件。
 （3）windows平台中动态库添加版本信息和版权信息(右击属性)。
 
 
-4. 2020.8.1  第四版v4
-Feature：
+4. 2020.8.1  第四版v4.0
+Features：
 （1）接口文件规范化，统一接口格式和注释格式。（include目录下）  
 （2）src/arm和src/aarch64下面的asm.S删除采用utils下面的公共汇编头。
 （3）支持Linux平台和Windows下Git版本获取以及接口get_version。
