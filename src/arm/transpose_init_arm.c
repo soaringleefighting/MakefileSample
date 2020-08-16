@@ -1,3 +1,12 @@
+/******************************************************************
+/*    Kunpeng Technology CO. LTD
+/*    2010-2020 Copyright reversed
+/*    @File			:	tranpose_init_arm.c
+/*    @Description	:	this file is initial file of tranpose_neon_arm.S. 
+/*    @Author		:	lipeng
+/*    @Modified		:	2020.8.16	Created
+/********************************************************************/
+
 //#include "../../utils/arm/cpu.h"
 #include "../transpose.h"
 

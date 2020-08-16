@@ -1,21 +1,34 @@
-/*************************************************************/
-/*  文件名: demo.c											*/
-/*  说明: libAVSample库的测试demo							*/
-/*  功能: 1.支持跨平台时间统计功能;							*/
-/*        2.支持两种命令行参数解析方式;						*/
-/*		  3.支持Git版本获取									*/
-/*		  4.支持linux下进程cpu核心绑定						*/
-/*		  5.支持demo中多线程测试							*/
-/*  修订记录:												*/
-/*		 1.created by lipeng at 2020.8.1					*/
-/*		 2.added 4th feature by lipeng at 2020.8.10			*/
-/*		 3.added 5th feature by lipeng at 2020.8.16			*/
-/*  版本:	  V1.0.2										*/
-/*************************************************************/
+/******************************************************************
+/*    Kunpeng Technology CO. LTD
+/*    2010-2020 Copyright reversed.
+/*    @File				:	demo.c
+/*    @Description		:   this file is test demo for libavsample library. 
+/*	  @Feature			:	1.支持跨平台时间统计功能;
+/*							2.支持两种命令行参数解析方式;
+/*							3.支持Git版本获取;
+/*							4.支持linux下进程cpu核心绑定;
+/*							5.支持demo中多线程测试
+/*    @Author			:	lipeng		
+/*    @Revison History	:
+/*		1. Date			: 2020.8.1
+/*		   Author		: lipeng
+/*		   Modification	: create the file
+/*		2. Date			: 2020.8.10
+/*		   Author		: lipeng
+/*		   Modification	: support cpu core affinity.	
+/*		3. Date			: 2020.8.16
+/*		   Author		: lipeng
+/*		   Modification	: support multiple thread test.			
+/*	  @Version	: 1.0.2
+/********************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>		//TODO: 类型定义统一为define.h
+
+#include "os_time_sdk.h"
+#include "libavsample.h"
 
 #if defined(__GNUC__) 
 #include <unistd.h>
@@ -33,13 +46,11 @@
 #include <errno.h>
 #endif
 #endif  /* End of #if defined(__GNUC__) */
-#include "os_time_sdk.h"
-#include "libavsample.h"
 
-#define  HAS_NEON	   (0)		// 0表示纯C，1表示arm neon优化
-#define  X86_ASM	   (0)		// 1:开启x86 assembly  0:不开启x86 assembly
+#define  HAS_NEON			(0)		// 0表示纯C，1表示arm neon优化
+#define  X86_ASM			(0)		// 1:开启x86 assembly  0:不开启x86 assembly
 
-#define ENABLE_CHROMA  (1)		// 1: 使能色度   0:只处理亮度
+#define ENABLE_CHROMA		(1)		// 1: 使能色度   0:只处理亮度
 
 // 注意:OPTION_PARSE_BASE和OPTION_PARSE_LINUX只能打开一个，且OPTION_PARSE_LINUX只能用于LINUX平台下
 // 两个宏都设置为1时，走getopt分支。
@@ -47,14 +58,15 @@
 // ./demo -i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100
 
 #define OPTION_PARSE_LINUX	(0)	// LINUX下的命令行参数解析方式，使用getopt
-// 长选项: ./demo  --input SlideEditing_1280x720_30.yuv --output out.yuv --width 1280 --height 720 --framenum 100
+// 长选项: ./demo  --input SlideEditing_1280x720_30.yuv --output out.yuv --uiWidth 1280 --uiHeight 720 --framenum 100
 // 短选项: ./demo  -i SlideEditing_1280x720_30.yuv -o out.yuv -w 1280 -t 720 -n 10
 
-#define MULTI_THREAD		(1)
+#define MULTI_THREAD		(0)
 
 #if MULTI_THREAD
 #include "pthread.h"
 #endif
+
 /*************调试打印函数***************/
 /* dx寄存器打印函数 */
 void cprintf(unsigned char *srcu8)
@@ -62,11 +74,13 @@ void cprintf(unsigned char *srcu8)
 	int i=0;
 	char *srcs8 = (char *)srcu8;
 	printf("u8:"); 
-	for(i=0; i < 16; i++){
+	for(i=0; i < 16; i++)
+	{
 		printf("%d ", srcu8[i]);
 	}
 	printf("s8:"); 
-	for(i=0; i < 16; i++){
+	for(i=0; i < 16; i++)
+	{
 		printf("%d ", srcs8[i]);
 	}
 	printf("\n");
@@ -88,8 +102,8 @@ int print_help(char* str)
 	printf(" -help : this help \n");
 	printf(" -i    : input yuv file \n");
 	printf(" -o    : output yuv file \n");
-	printf(" -wt   : width \n");
-	printf(" -ht   : height \n");
+	printf(" -wt   : uiWidth \n");
+	printf(" -ht   : uiHeight \n");
 	printf(" -fr   : framenum \n");
 	printf("Example: ./demo -i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100\n");
 	return 0;
@@ -112,11 +126,11 @@ static const struct option long_options[] =
 {
 	{ "input", required_argument, NULL, 'i' },
 	{ "output", required_argument, NULL, 'o' },
-	{ "width", required_argument, NULL, 'w' },
-	{ "height", required_argument, NULL, 't' },
+	{ "uiWidth", required_argument, NULL, 'w' },
+	{ "uiHeight", required_argument, NULL, 't' },
 	{ "framenum", required_argument, NULL, 'n' },
 	{ "version", no_argument, NULL, 'v' },
-	{ "help", no_argument, NULL, 'h' },
+	{ "help",	no_argument, NULL, 'h' },
 	{ 0, 0, 0, 0 }
 };
 
@@ -127,8 +141,8 @@ int print_help_getopt(char *str)
 	printf(" --help(-h)		: this help \n");
 	printf(" --input(-i)    : input yuv file \n");
 	printf(" --output(-o)   : output yuv file \n");
-	printf(" --width(-w)	: width \n");
-	printf(" --height(-h)   : height \n");
+	printf(" --uiWidth(-w)	: uiWidth \n");
+	printf(" --uiHeight(-h)   : uiHeight \n");
 	printf(" --framenum(-f) : framenum \n");
 	printf("Example: ./demo  -i SlideEditing_1280x720_30.yuv -o out.yuv -w 1280 -t 720 -n 10\n");
 	return 0;
@@ -152,8 +166,8 @@ typedef struct stArg
 {
 	char* input_str;	/* input  */
 	char* output_str;	/* output */
-	int	  width;		/* width  */
-	int   height;		/* height */
+	int	  uiWidth;		/* uiWidth  */
+	int   uiHeight;		/* uiHeight */
 	int   framenum;		/* framenum	  */
 	int	  thread_num;	/* thread_num */
 }stArg_pthread;
@@ -161,9 +175,9 @@ typedef struct stArg
 /****************主函数入口**********************************/
 void* alg_main(void* arg)
  {
- 	unsigned int width			= 0;
- 	unsigned int height			= 0;
- 	unsigned int frame_size_y	= 0;
+ 	unsigned int uiWidth			= 0;
+ 	unsigned int uiHeight			= 0;
+ 	unsigned int uiFramesize	= 0;
  	FILE *fin					= NULL;
  	FILE *fou					= NULL;
  	unsigned char *src			= NULL;
@@ -201,21 +215,21 @@ void* alg_main(void* arg)
  		return RET_FAIL;
  	}
  
- 	width			= args->width;
- 	height			= args->height;
+ 	uiWidth			= args->uiWidth;
+ 	uiHeight			= args->uiHeight;
  	framenum		= args->framenum;
  
- 	frame_size_y	= width * height;
+ 	uiFramesize	= uiWidth * uiHeight;
  
  	//*******2.输入图像和输出图像内存分配*********/
- 	src = (unsigned char *)malloc(frame_size_y);
+ 	src = (unsigned char *)malloc(uiFramesize);
  	if ( NULL == src )
  	{
  		printf("[demo] malloc src fail\n");
  		return RET_MALLOC;
  	}
  
- 	dst = (unsigned char *)malloc(frame_size_y);
+ 	dst = (unsigned char *)malloc(uiFramesize);
  	if ( NULL == dst )
  	{
  		printf("[demo] malloc dst fail\n");
@@ -223,14 +237,14 @@ void* alg_main(void* arg)
  	}
  
  #if ENABLE_CHROMA
- 	src_uv = (unsigned char *)malloc(frame_size_y/4);
+ 	src_uv = (unsigned char *)malloc(uiFramesize/4);
  	if ( NULL == src_uv )
  	{
  		printf("[demo] malloc src_uv fail\n");
  		return RET_MALLOC;
  	}
  
- 	dst_uv = (unsigned char *)malloc(frame_size_y/4);
+ 	dst_uv = (unsigned char *)malloc(uiFramesize/4);
  	if ( NULL == dst_uv )
  	{
  		printf("[demo] malloc dst_uv fail\n");
@@ -243,7 +257,7 @@ void* alg_main(void* arg)
  
  	os_sdk_inittimer(&t_os_timer);
  
- 	while ( fread(src, 1, frame_size_y, fin) == frame_size_y )
+ 	while ( fread(src, 1, uiFramesize, fin) == uiFramesize )
  	{
  		//*******4.主处理*********/
  		// 亮度分量转置 Y
@@ -251,11 +265,11 @@ void* alg_main(void* arg)
  #if  HAS_NEON
  		printf("[demo] arm neon test ...");
  		os_sdk_starttimer(&t_os_timer);
- 		x264_lowres_transpose_neon(dst, src, width, width, height);
+ 		x264_lowres_transpose_neon(dst, src, uiWidth, uiWidth, uiHeight);
  		time_count = os_sdk_stoptimer(&t_os_timer);
  
  		os_sdk_starttimer(&t_os_timer);
- 		libav_process(dst, src, width, width, height);
+ 		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
  		time_count_c = os_sdk_stoptimer(&t_os_timer);
  #endif
  
@@ -264,44 +278,44 @@ void* alg_main(void* arg)
  		printf("[demo] x86 sse2 test ...");
  		os_sdk_starttimer(&t_os_timer);
  
- 		ff_x264_lowres_transpose_sse2(dst, src, width, width, height);
+ 		ff_x264_lowres_transpose_sse2(dst, src, uiWidth, uiWidth, uiHeight);
  
  		time_count = os_sdk_stoptimer(&t_os_timer);
  
  		os_sdk_starttimer(&t_os_timer);
- 		libav_process(dst, src, width, width, height);
+ 		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
  		time_count_c = os_sdk_stoptimer(&t_os_timer);
  #endif
  #else
  		os_sdk_starttimer(&t_os_timer);
- 		libav_process(dst, src, width, width, height);
+ 		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
  		time_count_c = os_sdk_stoptimer(&t_os_timer);
  #endif
  
  		time_avg   += time_count;
  		time_avg_c += time_count_c;
  
- 		fwrite(dst, 1, frame_size_y, fou);
+ 		fwrite(dst, 1, uiFramesize, fou);
  
  #if ENABLE_CHROMA
  		// 色度分量转置
  		// U
- 		if( frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin) )
+ 		if( uiFramesize/4 != fread(src_uv, 1, uiFramesize/4, fin) )
  		{
  			return RET_FAIL;
  		}
- 		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
+ 		libav_process(dst_uv, src_uv, uiWidth/2, uiWidth/2 ,uiHeight/2);
  
- 		fwrite(dst_uv, 1, frame_size_y/4, fou);
+ 		fwrite(dst_uv, 1, uiFramesize/4, fou);
  		//V
- 		if ( frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin) )
+ 		if ( uiFramesize/4 != fread(src_uv, 1, uiFramesize/4, fin) )
  		{
  			return RET_FAIL;
  		}
- 		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
- 		fwrite(dst_uv, 1, frame_size_y/4, fou);
+ 		libav_process(dst_uv, src_uv, uiWidth/2, uiWidth/2 ,uiHeight/2);
+ 		fwrite(dst_uv, 1, uiFramesize/4, fou);
  #else
- 		fseek(fin, frame_size_y/2, SEEK_CUR); // 跳过色度分量的处理
+ 		fseek(fin, uiFramesize/2, SEEK_CUR); // 跳过色度分量的处理
  #endif
  
  		printf("%dth frame ok!! purec consumed time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_count_c, time_count);
@@ -345,14 +359,14 @@ int main(int argc, char *argv[])
 	//*******1.命令行输入参数解析*********/
 	if (argc != 7)
 	{
-		printf("\nUsage:demo.exe input.yuv output.yuv width height framenum thread_num.\n\n");
+		printf("\nUsage:demo.exe input.yuv output.yuv uiWidth uiHeight framenum thread_num.\n\n");
 		return RET_FAIL;
 	}
 
 	args.input_str  = argv[1];
 	args.output_str = argv[2];
-	args.width      = atoi(argv[3]);
-	args.height     = atoi(argv[4]);
+	args.uiWidth      = atoi(argv[3]);
+	args.uiHeight     = atoi(argv[4]);
 	args.framenum   = atoi(argv[5]);
 	thread_num		= atoi(argv[6]);
 
@@ -376,31 +390,39 @@ int main(int argc, char *argv[])
 /****************主函数入口**********************************/
 int main(int argc, char* argv[])
 {
-	unsigned int width = 0, height = 0;
-	unsigned int frame_size_y = 0;
-	//unsigned int frame_size,
-	FILE *fin = NULL, *fou = NULL;
-	unsigned char *src = NULL, *dst = NULL;
+	int			 iRet			 = RET_OK;
+	unsigned int uiWidth		 = 0;
+	unsigned int uiHeight		 = 0;
+	unsigned int uiFramesize	 = 0;
+	FILE		  *fin		= NULL;
+	FILE		  *fou		= NULL;
+	unsigned char *src		= NULL;
+	unsigned char *dst		= NULL;
 #if ENABLE_CHROMA
-	unsigned char *src_uv = NULL, *dst_uv  = NULL;
+	unsigned char *src_uv	= NULL;
+	unsigned char *dst_uv	= NULL;
 #endif
-	int frame_num = 0, framenum = 50;  /* 默认50帧 */
+	int frame_num			= 0;
+	int	framenum			= 50;  /* 默认50帧 */
 	
 #if CONFIG_CORE
-	int coreindex = 0;
+	int coreindex			= 0;
 #endif
 
 	/* 支持跨平台时间统计 */
-	os_timer  t_os_timer = {0};
-	double  time_count = 0.0, time_count_c = 0.0;
-	double  time_avg = 0.0, time_avg_c = 0.0;
+	os_timer  t_os_timer	= {0};
+	double    time_count	= 0.0;
+	double	  time_count_c	= 0.0;
+	double    time_avg		= 0.0;
+	double	  time_avg_c	= 0.0;
 
 //*******1.命令行输入参数解析*********/
 #if !OPTION_PARSE_LINUX	
 #if OPTION_PARSE_BASE
 	/* 采用strncmp实现命令行参数解析 */
 	int i = 0;
-	char *input_str = NULL, *output_str = NULL;
+	char *input_str	 = NULL;
+	char *output_str = NULL;
 	if (argc >= 11)
 	{
 	    i= 0;
@@ -418,13 +440,13 @@ int main(int argc, char* argv[])
 			{
 				output_str = argv[++i];
 			}
-			else if (!strncmp(argv[i], "-wt", 3)) // width
+			else if (!strncmp(argv[i], "-wt", 3)) // uiWidth
 			{
-				width = atoi(argv[++i]);
+				uiWidth = atoi(argv[++i]);
 			}
-			else if (!strncmp(argv[i], "-ht", 3)) // height
+			else if (!strncmp(argv[i], "-ht", 3)) // uiHeight
 			{
-				height = atoi(argv[++i]);
+				uiHeight = atoi(argv[++i]);
 			}
 			else if (!strncmp(argv[i], "-fr", 3)) // framenum
 			{
@@ -435,21 +457,21 @@ int main(int argc, char* argv[])
 	else
 	{
 		print_help(argv[0]);
-		return -1;
+		return RET_FAIL;
 	}
 
 	fin = fopen(input_str, "rb");
-	if (fin == NULL)
+	if ( NULL == fin )
 	{
-		printf("error:open %s fail\n", input_str);
-		return -1;
+		printf("[demo] error:open %s fail\n", input_str);
+		return RET_FAIL;
 	}
 
 	fou = fopen(output_str, "wb");
-	if (fou == NULL)
+	if ( NULL == fou )
 	{
-		printf("error: open %s fail\n", output_str);
-		return -1;
+		printf("[demo] error: open %s fail\n", output_str);
+		return RET_FAIL;
 	}
 
 #else
@@ -457,28 +479,28 @@ int main(int argc, char* argv[])
 
 	if (argc != 6)
 	{
-		printf("\nUsage:demo.exe input.yuv output.yuv width height framenum.\n\n");
-		return -1;
+		printf("\nUsage:demo.exe input.yuv output.yuv uiWidth uiHeight framenum.\n\n");
+		return RET_FAIL;
 	}
 
 	fin = fopen(argv[1], "rb");
-	if (fin == NULL)
+	if ( NULL == fin )
 	{
-		printf("error:open %s fail\n", argv[1]);
-		return -1;
+		printf("[demo] error:open %s fail\n", argv[1]);
+		return RET_FAIL;
 	}
 
 	sprintf(outname,"%s", argv[2]);
 
-	width = atoi(argv[3]);
-	height = atoi(argv[4]);
+	uiWidth = atoi(argv[3]);
+	uiHeight = atoi(argv[4]);
 	framenum = atoi(argv[5]);
 
 	fou = fopen(outname, "wb");
-	if (fou == NULL)
+	if ( NULL == fou )
 	{
-		printf("error: open %s fail\n", outname);
-		return -1;
+		printf("[demo] error: open %s fail\n", outname);
+		return RET_FAIL;
 	}
 #endif
 #endif
@@ -486,11 +508,12 @@ int main(int argc, char* argv[])
 #if defined(__GNUC__)  /* 针对LINUX平台 */
 #if OPTION_PARSE_LINUX
 	// 采用getopt和getopt_long实现命令行参数解析
-	char input_str[100], output_str[100];
+	char input_str[100] = {0};
+	char output_str[100]= {0};
 
-	int option_index = 0;
+	int option_index	= 0;
 	//int opterr = 0;
-	int ch;
+	int ch				= 0;
 	if (argc > 1)
 	{
 		while ((ch = getopt_long(argc, argv, short_options, long_options,
@@ -506,10 +529,10 @@ int main(int argc, char* argv[])
 					strcpy(output_str, optarg);
 					break;
 				case 'w':
-					width = atoi(optarg);
+					uiWidth = atoi(optarg);
 					break;
 				case 't':
-					height = atoi(optarg);
+					uiHeight = atoi(optarg);
 					break;
 				case 'n':
 					framenum = atoi(optarg);
@@ -519,35 +542,35 @@ int main(int argc, char* argv[])
 					//	break;
 				default:
 					printf("[libAVSample] Demo: unknown option found: %c\n", ch);
-					return -1;
+					return RET_FAIL;
 				}
 		}
 	}
 	else
 	{
 		print_help_getopt(argv[0]);
-		return -1;
+		return RET_FAIL;
 	}
 
 
 	fin = fopen(input_str, "rb");
-	if (fin == NULL)
+	if ( NULL == fin )
 	{
-		printf("error:open %s fail\n", input_str);
-		return -1;
+		printf("[demo] error:open %s fail\n", input_str);
+		return RET_FAIL;
 	}
 
 	fou = fopen(output_str, "wb");
-	if (fou == NULL)
+	if ( NULL == fou )
 	{
-		printf("error: open %s fail\n", output_str);
-		return -1;
+		printf("[demo] error: open %s fail\n", output_str);
+		return RET_FAIL;
 	}
 #endif
 
 #if CONFIG_CORE
 	coreindex = 3;
-	pid_t tid;
+	pid_t tid = 0;
 	
 	tid = syscall(SYS_gettid);  /* 获取当前进程pid */
 	setAffinity_CPU(tid, coreindex);  /* 指定程序在CPU为3的核心上运行，不指定时，运行的CPU随机分配 */
@@ -559,36 +582,40 @@ int main(int argc, char* argv[])
 	/* 支持版本获取 */
 	printf("[Current library info] %s.\n", libav_getversion());
 
-	frame_size_y = width * height;
+	uiFramesize = uiWidth * uiHeight;
 
 	//*******2.输入图像和输出图像内存分配*********/
-	src = (unsigned char *)malloc(frame_size_y);
-	if (src == NULL)
+	src = (unsigned char *)malloc(uiFramesize);
+	if ( NULL == src )
 	{
-		printf("malloc src fail\n");
-		return -1;
+		printf("[demo] malloc src fail\n");
+		iRet =  RET_MALLOC;
+		goto FAIL;
 	}
 
-	dst = (unsigned char *)malloc(frame_size_y);
-	if (dst == NULL)
+	dst = (unsigned char *)malloc(uiFramesize);
+	if ( NULL == dst )
 	{
-		printf("malloc dst fail\n");
-		return -1;
+		printf("[demo] malloc dst fail\n");
+		iRet =  RET_MALLOC;
+		goto FAIL;
 	}
 	
 #if ENABLE_CHROMA
-	src_uv = (unsigned char *)malloc(frame_size_y/4);
-	if (src_uv == NULL)
+	src_uv = (unsigned char *)malloc(uiFramesize/4);
+	if ( NULL == src_uv )
 	{
-		printf("malloc src_uv fail\n");
-		return -1;
+		printf("[demo] malloc src_uv fail\n");
+		iRet =  RET_MALLOC;
+		goto FAIL;
 	}
 
-	dst_uv = (unsigned char *)malloc(frame_size_y/4);
-	if (dst_uv == NULL)
+	dst_uv = (unsigned char *)malloc(uiFramesize/4);
+	if ( NULL == dst_uv )
 	{
-		printf("malloc dst_uv fail\n");
-		return -1;
+		printf("[demo] malloc dst_uv fail\n");
+		iRet =  RET_MALLOC;
+		goto FAIL;
 	}
 #endif
 
@@ -597,7 +624,7 @@ int main(int argc, char* argv[])
 
 	os_sdk_inittimer(&t_os_timer);
 
-	while (fread(src, 1, frame_size_y, fin) == frame_size_y)
+	while (fread(src, 1, uiFramesize, fin) == uiFramesize)
 	{
 		//*******4.主处理*********/
 		// 亮度分量转置 Y
@@ -605,13 +632,12 @@ int main(int argc, char* argv[])
 #if  HAS_NEON
 		printf("arm neon test ...");
 		os_sdk_starttimer(&t_os_timer);
-		x264_lowres_transpose_neon(dst, src, width, width, height);
+		x264_lowres_transpose_neon(dst, src, uiWidth, uiWidth, uiHeight);
 		time_count = os_sdk_stoptimer(&t_os_timer);
 
 		os_sdk_starttimer(&t_os_timer);
-		libav_process(dst, src, width, width, height);
+		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
-
 #endif
 
 
@@ -619,45 +645,47 @@ int main(int argc, char* argv[])
 		printf("x86 sse2 test ...");
 		os_sdk_starttimer(&t_os_timer);
 
-		ff_x264_lowres_transpose_sse2(dst, src, width, width, height);
+		ff_x264_lowres_transpose_sse2(dst, src, uiWidth, uiWidth, uiHeight);
 
 		time_count = os_sdk_stoptimer(&t_os_timer);
 
 		os_sdk_starttimer(&t_os_timer);
-		libav_process(dst, src, width, width, height);
+		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 #endif
 #else
 		os_sdk_starttimer(&t_os_timer);
-		libav_process(dst, src, width, width, height);
+		libav_process(dst, src, uiWidth, uiWidth, uiHeight);
 		time_count_c = os_sdk_stoptimer(&t_os_timer);
 #endif
 
-		time_avg += time_count;
+		time_avg   += time_count;
 		time_avg_c += time_count_c;
 
 
-		fwrite(dst, 1, frame_size_y, fou);
+		fwrite(dst, 1, uiFramesize, fou);
 
 #if ENABLE_CHROMA
 		// 色度分量转置
 		// U
-		if(frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin))
+		if(uiFramesize/4 != fread(src_uv, 1, uiFramesize/4, fin))
 		{
-			return RET_FAIL;
+			iRet =  RET_FAIL;
+			goto FAIL;
 		}
-		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
+		libav_process(dst_uv, src_uv, uiWidth/2, uiWidth/2 ,uiHeight/2);
 
-		fwrite(dst_uv, 1, frame_size_y/4, fou);
+		fwrite(dst_uv, 1, uiFramesize/4, fou);
 		//V
-		if (frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin))
+		if (uiFramesize/4 != fread(src_uv, 1, uiFramesize/4, fin))
 		{
-			return RET_FAIL;
+			iRet =  RET_FAIL;
+			goto FAIL;
 		}
-		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
-		fwrite(dst_uv, 1, frame_size_y/4, fou);
+		libav_process(dst_uv, src_uv, uiWidth/2, uiWidth/2 ,uiHeight/2);
+		fwrite(dst_uv, 1, uiFramesize/4, fou);
 #else
-		fseek(fin, frame_size_y/2, SEEK_CUR); // 跳过色度分量的处理
+		fseek(fin, uiFramesize/2, SEEK_CUR); // 跳过色度分量的处理
 #endif
 
 		printf("%dth frame ok!! purec consumed time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_count_c, time_count);
@@ -668,30 +696,53 @@ int main(int argc, char* argv[])
 	}
 
 	time_avg_c = time_avg_c/frame_num;
-	time_avg = time_avg/frame_num;
+	time_avg   = time_avg/frame_num;
 	printf("%d frames completed!! purec average time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_avg_c, time_avg);
 	
 	//*******5.函数指针反初始化*********/
 	libav_uninit();
 
-	free(src);
-	src = NULL;
-	free(dst);
-	dst = NULL;
+FAIL:
+	if ( NULL != src )
+	{
+		free(src);
+		src = NULL;
+	}
+
+	if ( NULL != dst )
+	{
+		free(dst);
+		dst = NULL;
+	}
+
 #if ENABLE_CHROMA
-	free(src_uv);
-	src_uv = NULL;
-	free(dst_uv);
-	dst_uv = NULL;
+	if ( NULL != src_uv )
+	{
+		free(src_uv);
+		src_uv = NULL;
+	}
+
+	if (NULL != dst_uv )
+	{
+		free(dst_uv);
+		dst_uv = NULL;
+	}
 #endif
 
-	fclose(fin);
-	fclose(fou);
+	if ( NULL != fin )
+	{
+		fclose(fin);
+	}
+
+	if ( NULL != fou )
+	{
+		fclose(fou);
+	}
 
 #if _WIN32
 	system("pause");
 #endif
 	
-  	return 0;
+  	return RET_OK;
 }
 #endif

@@ -1,3 +1,12 @@
+/******************************************************************
+/*    Kunpeng Technology CO. LTD
+/*    2010-2020 Copyright reversed
+/*    @File			:	libavsample.c
+/*    @Description	:   this file is interface for transpose function. 
+/*    @Author		:	lipeng
+/*    @Modified		:	2020.8.16	Created
+/********************************************************************/
+
 #include "../include/libavsample.h"
 #include "transpose.h"
 #include "version.h"
@@ -9,10 +18,10 @@ int libav_init()
 }
 
 
-int libav_process(unsigned char *dst, unsigned char *src, int width_lowres,
-					int stride_lowres, int lines_lowres)
+int libav_process(unsigned char *dst, unsigned char *src, int width,
+					int stride, int lines)
 {
-	transpose(dst, src, width_lowres, stride_lowres, lines_lowres);
+	transpose(dst, src, width, stride, lines);
 	return RET_OK;
 }
 

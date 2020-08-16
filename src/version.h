@@ -1,3 +1,11 @@
+/****************************************************************** 
+/*    Kunpeng Technology CO. LTD 
+/*    2010-2020 Copyright reversed 
+/*    File			:	revison.h 
+/*    Description	:	this file is revison information.  
+/*    Author		:	lipeng 
+/*    Modified		:	2020.8.16	Created 
+/********************************************************************/ 
 #ifndef VERSION_H_  
 #define VERSION_H_  
 //major.minor.svn(git)version.datetime_base   
@@ -5,8 +13,8 @@
 #define MINOR_VERSION	("1")  
 #if _WIN32  
 #define SG_BRANCH_NAME	("*master")  
-#define SG_COMMIT_HASH	("92a803b")  
-#define SG_COMMIT_DATE	("2020-08-1614:48:37+0800")  
+#define SG_COMMIT_HASH	("a5f9ec0")  
+#define SG_COMMIT_DATE	("2020-08-1615:24:45+0800")  
 #define SG_VERSION		(SG_COMMIT_HASH)  
 #else  
 #ifdef ANDROID 

@@ -1,11 +1,35 @@
+/******************************************************************
+/*    Kunpeng Technology CO. LTD
+/*    2010-2020 Copyright reversed
+/*    @File			:	transpose.c
+/*    @Description	:	this file used to tranpose image. 
+/*    @Author		:	lipeng
+/*    @Modified		:	2020.8.16	Created
+/********************************************************************/
+
 #include "transpose.h"
 
-void libavsample_transpose_c(unsigned char *dst, unsigned char *src, int width_lowres, int stride_lowres, int lines_lowres)
+int libavsample_transpose_c(unsigned char *dst, unsigned char *src, int width,
+							int stride, int lines)
 {
-	int y, x;
-	for (y = 0; y < width_lowres; y++, dst += lines_lowres) // width 
-           for (x = 0; x < lines_lowres; x++) // height
-               dst[x] = src[(lines_lowres-x-1)*stride_lowres + y];
+	int y = 0, x = 0;
+
+	/* input parameter check */
+	if (NULL == dst || NULL == src || width > INT_MAX ||
+		stride > INT_MAX || lines > INT_MAX)
+	{
+		return -1;
+	}
+
+	for (y = 0; y < width; y++, dst += lines) // width
+	{
+           for (x = 0; x < lines; x++) // height
+		   {
+               dst[x] = src[(lines-x-1)*stride + y];
+		   }
+	}
+
+	return 0;
 }
 
 /**

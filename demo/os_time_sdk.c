@@ -1,3 +1,12 @@
+/******************************************************************
+/*    Kunpeng Technology CO. LTD
+/*    2010-2020 Copyright reversed
+/*    @File			:	os_time_sdk.c
+/*    @Description	:	this file is function for time sdk. 
+/*    @Author		:	lipeng
+/*    @Modified		:	2020.8.16	Created
+/********************************************************************/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
