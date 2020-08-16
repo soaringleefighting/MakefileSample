@@ -15,7 +15,7 @@ echo %variable_file%
 echo. 2>%variable_file%
 
 git branch >> %variable_file%
-git log -1 --pretty=format:"%%n%%H%%n%%ci%%n" >> %variable_file%
+git log -1 --pretty=format:"%%n%%h%%n%%ci%%n" >> %variable_file%
 
 set branch_name="master"
 set commit_hash="00000"
