@@ -3,18 +3,34 @@
 /*  说明: libAVSample库的测试demo							*/
 /*  功能: 1.支持跨平台时间统计功能;							*/
 /*        2.支持两种命令行参数解析方式;						*/
-/*		  3.支持版本获取									*/
-/*  修订记录: created by lipeng at 2020.8.1					*/
-/*  版本:	  V1.0.0										*/
+/*		  3.支持Git版本获取									*/
+/*		  4.支持linux下进程cpu核心绑定						*/
+/*  修订记录:												*/
+/*		 1.created by lipeng at 2020.8.1					*/
+/*		 2.added 4th feature by lipeng at 2020.8.10			*/
+/*  版本:	  V1.0.1										*/
 /*************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
 #if defined(__GNUC__) 
 #include <unistd.h>
-#include <getopt.h>          /*getopt_long所在头文件 */
+#include <getopt.h>          /* getopt_long所在头文件 */
+
+#if CONFIG_CORE
+//#define _GNU_SOURCE			 /* 启动CPU_ZERO和CPU_SET等系统函数 */
+#define __USE_GNU
+#include <sched.h>			 /* sched_setaffinity和sched_getaffinity所在头文件 *///
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <errno.h>
 #endif
+#endif  /* End of #if defined(__GNUC__) */
 #include "os_time_sdk.h"
 #include "libavsample.h"
 
@@ -27,12 +43,13 @@
 // 两个宏都设置为1时，走getopt分支。
 #define OPTION_PARSE_BASE   (1) // 简单的命令行参数解析方式，使用strncmp
 // ./demo -i BlowingBubbles_416x240_50.yuv -o  out_sse2.yuv  -wt 416  -ht 240  -fr 100
+
 #define OPTION_PARSE_LINUX	(0)	// LINUX下的命令行参数解析方式，使用getopt
 // 长选项: ./demo  --input SlideEditing_1280x720_30.yuv --output out.yuv --width 1280 --height 720 --framenum 100
 // 短选项: ./demo  -i SlideEditing_1280x720_30.yuv -o out.yuv -w 1280 -t 720 -n 10
 
 /*************调试打印函数***************/
-// dx寄存器打印函数
+/* dx寄存器打印函数 */
 void cprintf(unsigned char *srcu8)
 {
 	int i=0;
@@ -48,7 +65,7 @@ void cprintf(unsigned char *srcu8)
 	printf("\n");
 }
 
-// rx/wx寄存器打印函数
+/* rx/wx寄存器打印函数 */
 void print(int in0, int in1, int in2, int in3)
 {
 	printf("\ndec: %d %d %d %d \t", in0, in1, in2, in3);
@@ -57,7 +74,7 @@ void print(int in0, int in1, int in2, int in3)
 }
 
 #if OPTION_PARSE_BASE
-// 打印帮助函数
+/* 打印帮助函数 */
 int print_help(char* str)
 {
 	printf("%s \nUsage: \n", str);
@@ -96,7 +113,7 @@ static const struct option long_options[] =
 	{ 0, 0, 0, 0 }
 };
 
-// 打印帮助函数
+/* 打印帮助函数 */
 int print_help_getopt(char *str)
 {
 	printf("%s \nUsage: \n", str);
@@ -112,6 +129,16 @@ int print_help_getopt(char *str)
 #endif
 
 
+#if CONFIG_CORE  /* CPU进程绑定：指定当前运行的CPU核心*/
+static void setAffinity_CPU(pid_t tid, int coreindex)
+{
+	cpu_set_t cs;
+	CPU_ZERO(&cs);
+	CPU_SET(coreindex, &cs);
+	sched_setaffinity(tid, sizeof(cs), &cs);
+} 
+#endif
+
 /****************主函数入口**********************************/
 int main(int argc, char* argv[])
 {
@@ -123,9 +150,13 @@ int main(int argc, char* argv[])
 #if ENABLE_CHROMA
 	unsigned char *src_uv = NULL, *dst_uv  = NULL;
 #endif
-	int frame_num = 0, framenum = 50;  // 默认50帧
+	int frame_num = 0, framenum = 50;  /* 默认50帧 */
 	
-	// 支持跨平台时间统计
+#if CONFIG_CORE
+	int coreindex = 0;
+#endif
+
+	/* 支持跨平台时间统计 */
 	os_timer  t_os_timer = {0};
 	double  time_count = 0.0, time_count_c = 0.0;
 	double  time_avg = 0.0, time_avg_c = 0.0;
@@ -133,7 +164,7 @@ int main(int argc, char* argv[])
 //*******1.命令行输入参数解析*********/
 #if !OPTION_PARSE_LINUX	
 #if OPTION_PARSE_BASE
-	//采用strncmp实现命令行参数解析
+	/* 采用strncmp实现命令行参数解析 */
 	int i = 0;
 	char *input_str = NULL, *output_str = NULL;
 	if (argc >= 11)
@@ -218,7 +249,7 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-#if defined(__GNUC__)  // 针对LINUX平台
+#if defined(__GNUC__)  /* 针对LINUX平台 */
 #if OPTION_PARSE_LINUX
 	// 采用getopt和getopt_long实现命令行参数解析
 	char input_str[100], output_str[100];
@@ -279,9 +310,19 @@ int main(int argc, char* argv[])
 		return -1;
 	}
 #endif
-#endif
+
+#if CONFIG_CORE
+	coreindex = 3;
+	pid_t tid;
 	
-	// 支持版本获取
+	tid = syscall(SYS_gettid);  /* 获取当前进程pid */
+	setAffinity_CPU(tid, coreindex);  /* 指定程序在CPU为3的核心上运行，不指定时，运行的CPU随机分配 */
+	printf("[demo] current process run on cpu %d\n", coreindex);
+#endif
+
+#endif  /* End of #if defined(__GNUC__)*/
+	
+	/* 支持版本获取 */
 	printf("[Current library info] %s.\n", libav_getversion());
 
 	frame_size_y = width * height;
