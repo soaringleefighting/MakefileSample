@@ -13,8 +13,8 @@
 #define MINOR_VERSION	("1")  
 #if _WIN32  
 #define SG_BRANCH_NAME	("*master")  
-#define SG_COMMIT_HASH	("a5f9ec0")  
-#define SG_COMMIT_DATE	("2020-08-1615:24:45+0800")  
+#define SG_COMMIT_HASH	("c64597d")  
+#define SG_COMMIT_DATE	("2020-08-1618:04:20+0800")  
 #define SG_VERSION		(SG_COMMIT_HASH)  
 #else  
 #ifdef ANDROID 

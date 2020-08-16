@@ -8,6 +8,7 @@
 /*							3.支持Git版本获取;
 /*							4.支持linux下进程cpu核心绑定;
 /*							5.支持demo中多线程测试
+/*							6.支持内存检查工具CRTDBG
 /*    @Author			:	lipeng		
 /*    @Revison History	:
 /*		1. Date			: 2020.8.1
@@ -18,7 +19,7 @@
 /*		   Modification	: support cpu core affinity.	
 /*		3. Date			: 2020.8.16
 /*		   Author		: lipeng
-/*		   Modification	: support multiple thread test.			
+/*		   Modification	: support multiple thread test and memory check.			
 /*	  @Version	: 1.0.2
 /********************************************************************/
 
@@ -65,6 +66,18 @@
 
 #if MULTI_THREAD
 #include "pthread.h"
+#endif
+
+/*内存检测工具CRTDBG*/
+#ifdef _MSC_VER && _DEBUG
+#define MEM_CK 	(1)
+#else
+#define	MEM_CK	(0)
+#endif
+
+#if MEM_CK
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
 #endif
 
 /*************调试打印函数***************/
@@ -579,6 +592,17 @@ int main(int argc, char* argv[])
 
 #endif  /* End of #if defined(__GNUC__)*/
 	
+	//下述代码放在demo的开始或中间位置
+	/* 内存检查工具CRTDBG*/
+#if MEM_CK
+	//_CrtSetBreakAlloc(63); //注：这里的63表示内存分配的次数，其值为调试信息的{}中的值。
+#endif
+
+#if MEM_CK
+	_CrtCheckMemory();
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	/* 支持版本获取 */
 	printf("[Current library info] %s.\n", libav_getversion());
 
