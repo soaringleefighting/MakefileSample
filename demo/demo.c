@@ -5,10 +5,12 @@
 /*        2.支持两种命令行参数解析方式;						*/
 /*		  3.支持Git版本获取									*/
 /*		  4.支持linux下进程cpu核心绑定						*/
+/*		  5.支持demo中多线程测试							*/
 /*  修订记录:												*/
 /*		 1.created by lipeng at 2020.8.1					*/
 /*		 2.added 4th feature by lipeng at 2020.8.10			*/
-/*  版本:	  V1.0.1										*/
+/*		 3.added 5th feature by lipeng at 2020.8.16			*/
+/*  版本:	  V1.0.2										*/
 /*************************************************************/
 
 #include <stdio.h>
@@ -48,6 +50,11 @@
 // 长选项: ./demo  --input SlideEditing_1280x720_30.yuv --output out.yuv --width 1280 --height 720 --framenum 100
 // 短选项: ./demo  -i SlideEditing_1280x720_30.yuv -o out.yuv -w 1280 -t 720 -n 10
 
+#define MULTI_THREAD		(1)
+
+#if MULTI_THREAD
+#include "pthread.h"
+#endif
 /*************调试打印函数***************/
 /* dx寄存器打印函数 */
 void cprintf(unsigned char *srcu8)
@@ -128,7 +135,6 @@ int print_help_getopt(char *str)
 }
 #endif
 
-
 #if CONFIG_CORE  /* CPU进程绑定：指定当前运行的CPU核心*/
 static void setAffinity_CPU(pid_t tid, int coreindex)
 {
@@ -139,6 +145,234 @@ static void setAffinity_CPU(pid_t tid, int coreindex)
 } 
 #endif
 
+#if MULTI_THREAD
+#define MAX_THREAD_NUM		(64)
+/* 多线程传递参数 */
+typedef struct stArg 
+{
+	char* input_str;	/* input  */
+	char* output_str;	/* output */
+	int	  width;		/* width  */
+	int   height;		/* height */
+	int   framenum;		/* framenum	  */
+	int	  thread_num;	/* thread_num */
+}stArg_pthread;
+
+/****************主函数入口**********************************/
+void* alg_main(void* arg)
+ {
+ 	unsigned int width			= 0;
+ 	unsigned int height			= 0;
+ 	unsigned int frame_size_y	= 0;
+ 	FILE *fin					= NULL;
+ 	FILE *fou					= NULL;
+ 	unsigned char *src			= NULL;
+ 	unsigned char *dst			= NULL;
+ 
+ #if ENABLE_CHROMA
+ 	unsigned char *src_uv		= NULL;
+ 	unsigned char *dst_uv		= NULL;
+ #endif
+ 	int frame_num				= 0;
+ 	int framenum				= 50;  /* 默认50帧 */
+ 
+ 	/* 支持跨平台时间统计 */
+ 	os_timer  t_os_timer		= {0};
+ 	double  time_count			= 0.0;
+ 	double	time_count_c		= 0.0;
+ 	double  time_avg			= 0.0;
+ 	double  time_avg_c			= 0.0;
+ 
+ 	stArg_pthread* args		= (stArg_pthread*) arg;
+ 	//*******1.支持版本获取*********/
+ 	printf("[Current library info] %s.\n", libav_getversion());
+ 
+ 	fin		= fopen(args->input_str, "rb");
+ 	if ( NULL == fin )
+ 	{
+ 		printf("[demo] error:open %s fail\n", args->input_str);
+ 		return RET_FAIL;
+ 	}
+ 
+ 	fou     = fopen(args->output_str, "wb");
+ 	if ( NULL == fou )
+ 	{
+ 		printf("[demo] error:open %s fail\n", args->output_str);
+ 		return RET_FAIL;
+ 	}
+ 
+ 	width			= args->width;
+ 	height			= args->height;
+ 	framenum		= args->framenum;
+ 
+ 	frame_size_y	= width * height;
+ 
+ 	//*******2.输入图像和输出图像内存分配*********/
+ 	src = (unsigned char *)malloc(frame_size_y);
+ 	if ( NULL == src )
+ 	{
+ 		printf("[demo] malloc src fail\n");
+ 		return RET_MALLOC;
+ 	}
+ 
+ 	dst = (unsigned char *)malloc(frame_size_y);
+ 	if ( NULL == dst )
+ 	{
+ 		printf("[demo] malloc dst fail\n");
+ 		return RET_MALLOC;
+ 	}
+ 
+ #if ENABLE_CHROMA
+ 	src_uv = (unsigned char *)malloc(frame_size_y/4);
+ 	if ( NULL == src_uv )
+ 	{
+ 		printf("[demo] malloc src_uv fail\n");
+ 		return RET_MALLOC;
+ 	}
+ 
+ 	dst_uv = (unsigned char *)malloc(frame_size_y/4);
+ 	if ( NULL == dst_uv )
+ 	{
+ 		printf("[demo] malloc dst_uv fail\n");
+ 		return RET_MALLOC;
+ 	}
+ #endif
+ 
+ 	//*******3.函数指针初始化*********/
+ 	libav_init();
+ 
+ 	os_sdk_inittimer(&t_os_timer);
+ 
+ 	while ( fread(src, 1, frame_size_y, fin) == frame_size_y )
+ 	{
+ 		//*******4.主处理*********/
+ 		// 亮度分量转置 Y
+ #if HAS_NEON || X86_ASM
+ #if  HAS_NEON
+ 		printf("[demo] arm neon test ...");
+ 		os_sdk_starttimer(&t_os_timer);
+ 		x264_lowres_transpose_neon(dst, src, width, width, height);
+ 		time_count = os_sdk_stoptimer(&t_os_timer);
+ 
+ 		os_sdk_starttimer(&t_os_timer);
+ 		libav_process(dst, src, width, width, height);
+ 		time_count_c = os_sdk_stoptimer(&t_os_timer);
+ #endif
+ 
+ 
+ #if X86_ASM
+ 		printf("[demo] x86 sse2 test ...");
+ 		os_sdk_starttimer(&t_os_timer);
+ 
+ 		ff_x264_lowres_transpose_sse2(dst, src, width, width, height);
+ 
+ 		time_count = os_sdk_stoptimer(&t_os_timer);
+ 
+ 		os_sdk_starttimer(&t_os_timer);
+ 		libav_process(dst, src, width, width, height);
+ 		time_count_c = os_sdk_stoptimer(&t_os_timer);
+ #endif
+ #else
+ 		os_sdk_starttimer(&t_os_timer);
+ 		libav_process(dst, src, width, width, height);
+ 		time_count_c = os_sdk_stoptimer(&t_os_timer);
+ #endif
+ 
+ 		time_avg   += time_count;
+ 		time_avg_c += time_count_c;
+ 
+ 		fwrite(dst, 1, frame_size_y, fou);
+ 
+ #if ENABLE_CHROMA
+ 		// 色度分量转置
+ 		// U
+ 		if( frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin) )
+ 		{
+ 			return RET_FAIL;
+ 		}
+ 		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
+ 
+ 		fwrite(dst_uv, 1, frame_size_y/4, fou);
+ 		//V
+ 		if ( frame_size_y/4 != fread(src_uv, 1, frame_size_y/4, fin) )
+ 		{
+ 			return RET_FAIL;
+ 		}
+ 		libav_process(dst_uv, src_uv, width/2, width/2 ,height/2);
+ 		fwrite(dst_uv, 1, frame_size_y/4, fou);
+ #else
+ 		fseek(fin, frame_size_y/2, SEEK_CUR); // 跳过色度分量的处理
+ #endif
+ 
+ 		printf("%dth frame ok!! purec consumed time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_count_c, time_count);
+ 		frame_num++;
+ 
+ 		if(frame_num >= framenum)
+ 			break;
+ 	}
+ 
+ 	time_avg_c	= time_avg_c / frame_num;
+ 	time_avg	= time_avg   / frame_num;
+ 	printf("%d frames completed!! purec average time: %f ms, sse2/neon consumed time: %f ms\n", frame_num, time_avg_c, time_avg);
+ 
+ 	//*******5.函数指针反初始化*********/
+ 	libav_uninit();
+ 
+ 	free(src);
+ 	src = NULL;
+ 	free(dst);
+ 	dst = NULL;
+ #if ENABLE_CHROMA
+ 	free(src_uv);
+ 	src_uv = NULL;
+ 	free(dst_uv);
+ 	dst_uv = NULL;
+ #endif
+ 
+ 	fclose(fin);
+ 	fclose(fou);
+  
+ 	return RET_OK;
+ }
+
+
+int main(int argc, char *argv[])
+{
+	int	i = 0;
+	int thread_num = 0;
+	pthread_t t1		= {0};
+	stArg_pthread args	= {0};
+	//*******1.命令行输入参数解析*********/
+	if (argc != 7)
+	{
+		printf("\nUsage:demo.exe input.yuv output.yuv width height framenum thread_num.\n\n");
+		return RET_FAIL;
+	}
+
+	args.input_str  = argv[1];
+	args.output_str = argv[2];
+	args.width      = atoi(argv[3]);
+	args.height     = atoi(argv[4]);
+	args.framenum   = atoi(argv[5]);
+	thread_num		= atoi(argv[6]);
+
+	args.thread_num = (thread_num > MAX_THREAD_NUM) ? MAX_THREAD_NUM : thread_num;
+
+	for( i = 0; i < args.thread_num; i++ )
+	{
+		printf("[demo] threadnum: %d\n", i);
+		pthread_create(&t1, NULL, alg_main, (void*)&args);
+		pthread_join(t1, NULL);
+	}
+
+#if _WIN32
+	system("pause");
+#endif
+
+	return RET_OK;
+}
+
+#else
 /****************主函数入口**********************************/
 int main(int argc, char* argv[])
 {
@@ -460,3 +694,4 @@ int main(int argc, char* argv[])
 	
   	return 0;
 }
+#endif
