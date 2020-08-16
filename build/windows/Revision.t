@@ -9,11 +9,11 @@
 #define SG_COMMIT_HASH	("$SG_COMMIT_HASH$") 
 #define SG_COMMIT_DATE	("$SG_COMMIT_DATE$") 
 #define SG_VERSION		(SG_COMMIT_HASH) 
-#endif
- 
+#else 
 #ifdef ANDROID
 #define SG_VERSION		(1000) //TODO: support git version for android platform
 #else
-#define SG_VERSION		(GIT_VERSION)  
-#endif  
+#define SG_VERSION		(GIT_VERSION) 
 #endif 
+#endif /* #if _WIN32 */ 
+#endif /* #ifndef VERSION_H_ */

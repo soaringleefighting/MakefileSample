@@ -102,6 +102,10 @@
       <Message>Sync git info version</Message>
       <Outputs>nonexistentfile</Outputs>
     </CustomBuildStep>
+    <PreBuildEvent>
+      <Command>
+      </Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

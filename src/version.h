@@ -5,14 +5,14 @@
 #define MINOR_VERSION	("1")  
 #if _WIN32  
 #define SG_BRANCH_NAME	("*master")  
-#define SG_COMMIT_HASH	("1bd400a85760d4406150d0f6683991062cdbba88")  
-#define SG_COMMIT_DATE	("2020-08-0119:55:17+0800")  
+#define SG_COMMIT_HASH	("40c7cda910bd97a3fcd1295c96d66b5746586f52")  
+#define SG_COMMIT_DATE	("2020-08-0211:17:20+0800")  
 #define SG_VERSION		(SG_COMMIT_HASH)  
-#endif
-
-#ifdef ANDROID
-#define SG_VERSION		(1000) //TODO: support git version for android platform
-#else
+#else  
+#ifdef ANDROID 
+#define SG_VERSION		(1000) //TODO: support git version for android platform 
+#else 
 #define SG_VERSION		(GIT_VERSION)  
 #endif  
-#endif  
+#endif /* #if _WIN32 */  
+#endif /* #ifndef VERSION_H_ */ 
