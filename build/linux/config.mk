@@ -185,12 +185,12 @@ ifeq ($(PUREC), 0)
 ifeq ($(findstring Linux, $(OS)), Linux)
 ###X86_32架构	
 ifeq ($(platform), x86_32)
-EXTRA_CFLAGS+=-DARCH_X86_64=0 
+EXTRA_CFLAGS += -DARCH_X86_64=0 
 endif
 
 ###X86_64架构	
 ifeq ($(platform), x86_64)
-EXTRA_LFLAGS+=-DARCH_X86_64=1 
+EXTRA_CFLAGS += -DARCH_X86_64=1 
 endif
 
 ###ARM32架构	
@@ -209,12 +209,12 @@ ifeq ($(findstring Darwin, $(OS)), Darwin)
 
 ###MAC32架构	
 ifeq ($(platform), x86_32)
-EXTRA_LFLAGS+=-DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0
 endif
 
 ###MAC64架构	
 ifeq ($(platform), x86_64)
-EXTRA_LFLAGS+=-DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0
 endif
 
 ###IOS平台
