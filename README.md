@@ -2,7 +2,7 @@
 This is a sample project for demonstrating how to use makefile simply.
 
 ## 一、支持平台(OS supported)
-Linux(ARM), Windows, Android, Mac, IOS
+Linux(ARM), Windows, Android, MacOS, IOS
 
 ## 二、各平台编译说明(All-platform compiler description)
 
@@ -32,18 +32,24 @@ make -f Makefile_lib platform=arm64   CROSS=aarch64-linux-android- PUREC=1
 
 make -f Makefile_demo platform=arm64  CROSS=aarch64-linux-android- PUREC=1
 
-### 3、Mac平台
-(1) Mac64位：
+### 3、MacOS平台
+(1) MacOS X86_64位：
 
 make -f Makefile_lib target_plat=mac platform=x86_64 PUREC=1
 
 make -f Makefile_demo target_plat=mac platform=x86_64 PUREC=1
 
-(2) Mac32位：
+(2) MacOS X86_32位：
 
 make -f Makefile_lib target_plat=mac platform=x86_32 PUREC=1
 
 make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=1
+
+(3) MacOS ARM64位(Apple Silicon)：
+
+make -f Makefile_lib target_plat=mac platform=arm64 PUREC=1
+
+make -f Makefile_demo target_plat=mac platform=arm64 PUREC=1
 
 ### 4、IOS平台
 (1) IOS32位：

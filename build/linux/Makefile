@@ -33,6 +33,9 @@ all: clean
 	#make -f Makefile_lib target_plat=mac platform=x86_32 PUREC=0
 	#make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=0
 
+	#make -f Makefile_lib  target_plat=mac platform=arm64 PUREC=0
+	#make -f Makefile_demo target_plat=mac platform=arm64 PUREC=0 
+
 clean:
 ##################################Linux平台#########################################
 	make -f Makefile_lib  platform=x86_64 PUREC=0 clean
@@ -61,4 +64,7 @@ clean:
 	
 	#make -f Makefile_lib target_plat=mac platform=x86_32 PUREC=0 clean
 	#make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=0 clean
+
+	#make -f Makefile_lib  target_plat=mac platform=arm64 PUREC=0 clean
+	#make -f Makefile_demo target_plat=mac platform=arm64 PUREC=0 clean
 	

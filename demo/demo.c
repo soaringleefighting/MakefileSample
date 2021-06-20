@@ -19,8 +19,11 @@
 /*		   Modification	: support cpu core affinity.	
 /*		3. Date			: 2020.8.16
 /*		   Author		: lipeng
-/*		   Modification	: support multiple thread test and memory check.			
-/*	  @Version	: 1.0.2
+/*		   Modification	: support multiple thread test and memory check.
+/*		4. Date			: 2021.6.20
+/*		   Author		: lipeng
+/*		   Modification	: support macOS arm64 architechture (Apple Silicon).			
+/*	  @Version	: 1.0.3
 /********************************************************************/
 
 #include <stdio.h>
@@ -31,7 +34,7 @@
 #include "os_time_sdk.h"
 #include "libavsample.h"
 
-#if defined(__GNUC__) 
+#if defined(__GNUC__)  && !defined(__APPLE__) 
 #include <unistd.h>
 #include <getopt.h>          /* getopt_long所在头文件 */
 
@@ -48,8 +51,8 @@
 #endif
 #endif  /* End of #if defined(__GNUC__) */
 
-#define  HAS_NEON			(0)		// 0表示纯C，1表示arm neon优化
-#define  X86_ASM			(0)		// 1:开启x86 assembly  0:不开启x86 assembly
+#define HAS_NEON			(1)		// 0表示纯C，1表示arm neon优化
+#define X86_ASM			    (0)		// 1:开启x86 assembly  0:不开启x86 assembly
 
 #define ENABLE_CHROMA		(1)		// 1: 使能色度   0:只处理亮度
 
@@ -123,6 +126,7 @@ int print_help(char* str)
 }
 #endif
 
+#if defined(__GNUC__) && !defined(__APPLE__)  /* 针对LINUX平台 */
 #if OPTION_PARSE_LINUX
 static const char *short_options = "i:o:w:t:n:hv";
 // struct option 
@@ -170,6 +174,7 @@ static void setAffinity_CPU(pid_t tid, int coreindex)
 	CPU_SET(coreindex, &cs);
 	sched_setaffinity(tid, sizeof(cs), &cs);
 } 
+#endif
 #endif
 
 #if MULTI_THREAD
@@ -518,7 +523,7 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-#if defined(__GNUC__)  /* 针对LINUX平台 */
+#if defined(__GNUC__) && !defined(__APPLE__)  /* 针对LINUX平台 */
 #if OPTION_PARSE_LINUX
 	// 采用getopt和getopt_long实现命令行参数解析
 	char input_str[100] = {0};

@@ -7,7 +7,7 @@
 /*    @Modified		:	2020.8.16	Created
 /********************************************************************/
 
-void transpose_neon(unsigned char *dst, unsigned char* src, int width_lowres,
+void x264_lowres_transpose_neon(unsigned char *dst, unsigned char* src, int width_lowres,
 								int stride_lowres ,int lines_lowres);
 
 void transpose_init_aarch64(unsigned char *dst, unsigned char* src, int width_lowres, int stride_lowres ,int lines_lowres)
@@ -16,6 +16,6 @@ void transpose_init_aarch64(unsigned char *dst, unsigned char* src, int width_lo
 
 	//if (have_neon(cpu_flags))
 	{
-		transpose_neon(dst, src, width_lowres, stride_lowres, lines_lowres);
+		x264_lowres_transpose_neon(dst, src, width_lowres, stride_lowres, lines_lowres);
 	}
 }

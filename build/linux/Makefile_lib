@@ -29,7 +29,7 @@ V_PATH += $(SRC_PATH)
 vpath %.h $(V_PATH)
 
 #设置编译的相关参数
-CFLAGS := $(DEBUG_FLAGS) -DGitversion_$(GIT) -DGIT_VERSION=\"$(GIT)\" #-Wall   
+CFLAGS := $(DEBUG_FLAGS) -DGitversion_$(GIT) -DGIT_VERSION=\"$(GIT)\" -w #-Wall   
 CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
 
 CXXFLAGS := -Wall 
