@@ -1,30 +1,30 @@
 /******************************************************************
-/*    Kunpeng Technology CO. LTD
-/*    2010-2020 Copyright reversed.
-/*    @File				:	demo.c
-/*    @Description		:   this file is test demo for libavsample library. 
-/*	  @Feature			:	1.支持跨平台时间统计功能;
-/*							2.支持两种命令行参数解析方式;
-/*							3.支持Git版本获取;
-/*							4.支持linux下进程cpu核心绑定;
-/*							5.支持demo中多线程测试
-/*							6.支持内存检查工具CRTDBG
-/*    @Author			:	lipeng		
-/*    @Revison History	:
-/*		1. Date			: 2020.8.1
-/*		   Author		: lipeng
-/*		   Modification	: create the file
-/*		2. Date			: 2020.8.10
-/*		   Author		: lipeng
-/*		   Modification	: support cpu core affinity.	
-/*		3. Date			: 2020.8.16
-/*		   Author		: lipeng
-/*		   Modification	: support multiple thread test and memory check.
-/*		4. Date			: 2021.6.20
-/*		   Author		: lipeng
-/*		   Modification	: support macOS arm64 architechture (Apple Silicon).			
-/*	  @Version	: 1.0.3
-/********************************************************************/
+    Kunpeng Technology CO. LTD
+    2010-2020 Copyright reversed.
+    @File				:	demo.c
+    @Description		:   this file is test demo for libavsample library. 
+	@Feature			:	1.支持跨平台时间统计功能;
+							2.支持两种命令行参数解析方式;
+							3.支持Git版本获取;
+							4.支持linux下进程cpu核心绑定;
+							5.支持demo中多线程测试
+							6.支持内存检查工具CRTDBG
+    @Author				:	lipeng		
+    @Revison History	:
+		1. Date			: 2020.8.1
+		   Author		: lipeng
+		   Modification	: create the file
+		2. Date			: 2020.8.10
+		   Author		: lipeng
+		   Modification	: support cpu core affinity.	
+		3. Date			: 2020.8.16
+		   Author		: lipeng
+		   Modification	: support multiple thread test and memory check.
+		4. Date			: 2021.6.20
+		   Author		: lipeng
+		   Modification	: support macOS arm64 architechture (Apple Silicon).			
+	 @Version	: 1.0.3
+********************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,12 +34,12 @@
 #include "os_time_sdk.h"
 #include "libavsample.h"
 
-#if defined(__GNUC__)  && !defined(__APPLE__) 
+#if defined(__GNUC__)  && !defined(__APPLE__) /* 针对LINUX平台 */
 #include <unistd.h>
 #include <getopt.h>          /* getopt_long所在头文件 */
 
 #if CONFIG_CORE
-//#define _GNU_SOURCE			 /* 启动CPU_ZERO和CPU_SET等系统函数 */
+#define _GNU_SOURCE			 /* 启动CPU_ZERO和CPU_SET等系统函数 */
 #define __USE_GNU
 #include <sched.h>			 /* sched_setaffinity和sched_getaffinity所在头文件 *///
 #include <sys/ioctl.h>
@@ -49,7 +49,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #endif
-#endif  /* End of #if defined(__GNUC__) */
+#endif  /* End of #if defined(__GNUC__)  && !defined(__APPLE__) */
 
 #define HAS_NEON			(0)		// 0表示纯C，1表示arm neon优化
 #define X86_ASM			    (0)		// 1:开启x86 assembly  0:不开启x86 assembly
@@ -72,10 +72,12 @@
 #endif
 
 /*内存检测工具CRTDBG*/
-#ifdef _MSC_VER && _DEBUG
+#if ARCH_X86
+#if defined(_MSC_VER) && defined(_DEBUG)
 #define MEM_CK 	(1)
 #else
 #define	MEM_CK	(0)
+#endif
 #endif
 
 #if MEM_CK
@@ -428,7 +430,7 @@ int main(int argc, char* argv[])
 #endif
 
 	/* 支持跨平台时间统计 */
-	os_timer  t_os_timer	= {0};
+	os_timer  t_os_timer;
 	double    time_count	= 0.0;
 	double	  time_count_c	= 0.0;
 	double    time_avg		= 0.0;
@@ -609,7 +611,7 @@ int main(int argc, char* argv[])
 #endif
 
 	/* 支持版本获取 */
-	printf("[Current library info] %s.\n", libav_getversion());
+	printf("[AVSample_lib] info: %s.\n", libav_getversion());
 
 	uiFramesize = uiWidth * uiHeight;
 
@@ -772,6 +774,6 @@ FAIL:
 	system("pause");
 #endif
 	
-  	return RET_OK;
+	return iRet;// RET_OK;
 }
 #endif

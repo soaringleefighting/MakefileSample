@@ -1,11 +1,11 @@
 /******************************************************************
-/*    Kunpeng Technology CO. LTD
-/*    2010-2020 Copyright reversed
-/*    @File			:	transpose.c
-/*    @Description	:	this file used to tranpose image. 
-/*    @Author		:	lipeng
-/*    @Modified		:	2020.8.16	Created
-/********************************************************************/
+    Kunpeng Technology CO. LTD
+    2010-2020 Copyright reversed
+    @File			:	transpose.c
+    @Description	:	this file used to tranpose image. 
+    @Author			:	lipeng
+    @Modified		:	2020.8.16	Created
+********************************************************************/
 
 #include "transpose.h"
 
@@ -39,16 +39,16 @@ void transpose_init()
 {
 	transpose = libavsample_transpose_c;
 
-	// 支持根据不同平台设置汇编函数指针
-#if ARCH_AARCH64
+	// 支持根据不同平台的CPUflags自动设置汇编函数指针
+#if ARCH_AARCH64 && HAVE_NEON
 		transpose_init_aarch64();
 #endif // End of #if ARCH_AARCH64
 
-#if ARCH_ARM
+#if ARCH_ARM && HAVE_NEON
 		transpose_init_arm();
 #endif // End of #if ARCH_ARM
 
-#if ARCH_X86
+#if ARCH_X86 && HAVE_X86ASM 
 		transpose_init_x86();
 #endif // End of #if ARCH_X86
 

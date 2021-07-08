@@ -1,18 +1,19 @@
 /******************************************************************
-/*    Kunpeng Technology CO. LTD
-/*    2010-2020 Copyright reversed
-/*    @File			:	transpose_init.c
-/*    @Description	:	this file is initial for transpose function. 
-/*    @Author		:	lipeng
-/*    @Modified		:	2020.8.16	Created
-/********************************************************************/
+    Kunpeng Technology CO. LTD
+    2010-2020 Copyright reversed
+    @File			:	transpose_init.c
+    @Description	:	this file is initial for transpose function. 
+    @Author			:	lipeng
+    @Modified		:	2020.8.16	Created
+						2021.7.8	support cpuflags
+********************************************************************/
 
 #include "../../utils/cpu.h"
 #include "../transpose.h"
 
-void ff_x264_lowres_transpose_sse2(unsigned char *dst, unsigned char* src, int width,
+int ff_x264_lowres_transpose_sse2(unsigned char *dst, unsigned char* src, int width,
 								int stride, int lines);
-void ff_x264_lowres_transpose_avx2(unsigned char *dst, unsigned char* src, int width,
+int ff_x264_lowres_transpose_avx2(unsigned char *dst, unsigned char* src, int width,
 								int stride, int lines);
 
 void transpose_init_x86()

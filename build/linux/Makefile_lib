@@ -18,6 +18,7 @@ include config.mk
 
 #设置相关路径
 SRC_PATH := ./../../src
+UTL_PATH := ./../../utils
 INC_PATH := ./../../include
 LIB_PATH := $(LIB_DIR)
 LIB_NAME := libAVSample
@@ -29,7 +30,7 @@ V_PATH += $(SRC_PATH)
 vpath %.h $(V_PATH)
 
 #设置编译的相关参数
-CFLAGS := $(DEBUG_FLAGS) -DGitversion_$(GIT) -DGIT_VERSION=\"$(GIT)\" -w #-Wall   
+CFLAGS := $(DEBUG_FLAGS) -DGitversion_$(GIT) -DGIT_VERSION=\"$(GIT)\" -Wall   
 CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
 
 CXXFLAGS := -Wall 
@@ -47,8 +48,9 @@ LIBS	:= $(LIB_PATH)/$(LIB_NAME).a $(LIB_PATH)/$(LIB_NAME).so
 #获取需要编译的OBJS
 #方法1：指定文件
 #以下获取OBJS文件的方式适用于含有少量文件的编译
-C_SRCS = $(SRC_PATH)/transpose.c  \
-	 $(SRC_PATH)/libavsample.c
+C_SRCS = $(SRC_PATH)/transpose.c  	\
+		 $(SRC_PATH)/libavsample.c	\
+		 $(UTL_PATH)/cpu.c
 	      
 
 #方法2：遍历文件夹
@@ -65,6 +67,12 @@ C_SRCS = $(SRC_PATH)/transpose.c  \
 #OBJS	:= $(filter-out %x86inc.o %x86util.o, $(C_OBJS) $(A_OBJS))
 
 ifeq ($(PUREC), 0)
+ifeq ($(findstring x86, $(platform)), x86)
+C_SRCS += $(SRC_PATH)/x86/transpose_init.c	\
+		  $(UTL_PATH)/x86/cpu_x86.c	
+A_SRCS += $(UTL_PATH)/x86/cpuid.asm
+endif
+
 #X86 32位纯汇编
 ifeq ($(platform), x86_32)
 C_SRCS += $(SRC_PATH)/x86/transpose_init.c
@@ -84,13 +92,15 @@ endif
 
 # AARCH64 NEON汇编
 ifeq ($(platform), arm64)
-C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c
+C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c	\
+	      $(UTL_PATH)/aarch64/cpu_aarch64.c
 A_SRCS += $(SRC_PATH)/aarch64/transpose_neon_aarch64.S
 endif
 
 # ARM32位NEON汇编
 ifeq ($(platform), ios32)
-C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c
+C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c	\
+		  $(UTL_PATH)/arm/cpu_arm.c
 A_SRCS += $(SRC_PATH)/arm/transpose_neon_arm.S
 endif
 

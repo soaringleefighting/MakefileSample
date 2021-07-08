@@ -33,7 +33,7 @@ SRCS = $(DEMOPATH)/demo.c        			\
 OBJS = $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS))))
 
 ##设置编译选项
-CFLAGS := $(DEBUG_FLAGS)  -w #-Wall   
+CFLAGS := $(DEBUG_FLAGS) -Wall   
 CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
 CFLAGS += -DCONFIG_CORE
 #-I/usr/include/
@@ -49,7 +49,7 @@ LDFLAGS += $(EXTRA_LFLAGS)
 #编译规则
 all: clean mkdr $(BIN_TARGET)
 mkdr: #自动创建输出目录OUT_DIR
-	if [ ! -d $(OUT_DIR) ];then mkdir -p $(OUT_DIR); echo "$(OUT_DIR) create successfully!"; else echo "$(OUT_DIR) already exists!"; fi
+	if [ ! -d $(OUT_DIR) ];then mkdir -p $(OUT_DIR); echo "[make] info: $(OUT_DIR) create successfully!"; else echo "[make] info: $(OUT_DIR) already exists!"; fi
 	
 $(BIN_TARGET):	$(OBJS)
 #	$(error $(OBJS))

@@ -1,11 +1,11 @@
 /******************************************************************
-/*    Kunpeng Technology CO. LTD
-/*    2010-2020 Copyright reversed
-/*    @File			:	libavsample.c
-/*    @Description	:   this file is interface for transpose function. 
-/*    @Author		:	lipeng
-/*    @Modified		:	2020.8.16	Created
-/********************************************************************/
+    Kunpeng Technology CO. LTD
+    2010-2020 Copyright reversed
+    @File			:	libavsample.c
+    @Description	:   this file is interface for transpose function. 
+    @Author			:	lipeng
+    @Modified		:	2020.8.16	Created
+********************************************************************/
 
 #include "../include/libavsample.h"
 #include "transpose.h"

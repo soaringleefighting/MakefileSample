@@ -1,5 +1,9 @@
 ##说明：
-#包含编译配置(系统或架构相关宏以及编译链接选项等配置)
+#1.包含编译配置(系统或架构相关宏以及编译链接选项等配置)
+#2.关于架构相关宏定义的说明：
+#(1) ARCH_X86/ARCH_ARM/ARCH_AARCH64/ARCH_MIPS/ARCH_PPC表示不同的架构平台；
+#(2) ARCH_X86_64=1表示X86架构64位，ARCH_X86_64=0表示X86架构32位；
+#(3) HAVE_X86ASM表示开启X86汇编；HAVE_NEON表示采用NEON技术。
 
 #检测系统
 OS = $(shell uname)
@@ -23,7 +27,7 @@ ifeq ($(findstring Linux, $(OS)), Linux)
 	
 ###ARM32架构	
 ifeq ($(platform), arm32)
-	ARCH_DEF		:= -DARCH_ARM=1 
+	ARCH_DEF		:= -DARCH_X86=0 -DARCH_ARM=1 -DARCH_AARCH64=0 -DARCH_MIPS=0 
 	arch			:= arm
 	EXTRA_CFLAGS 	:= -march=armv7-a -marm $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -march=armv7-a -marm -pie -fPIE
@@ -35,7 +39,7 @@ endif
 
 ###ARM64架构	
 ifeq ($(platform), arm64)
-	ARCH_DEF		:= -DARCH_AARCH64=1 -DARCH_ARM=1
+	ARCH_DEF		:= -DARCH_X86=0 -DARCH_ARM=0 -DARCH_AARCH64=1 -DARCH_MIPS=0 
 	arch			:= aarch64
 	EXTRA_CFLAGS 	:= -march=armv8-a $(ARCH_DEF)
 	EXTRA_LFLAGS 	:= -march=armv8-a  -pie -fPIE
@@ -197,22 +201,22 @@ ifeq ($(PUREC), 0)
 ifeq ($(findstring Linux, $(OS)), Linux)
 ###X86_32架构	
 ifeq ($(platform), x86_32)
-EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1 -DHAVE_SSE=1 -DHAVE_AVX=1
 endif
 
 ###X86_64架构	
 ifeq ($(platform), x86_64)
-EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1 -DHAVE_SSE=1 -DHAVE_AVX=1
 endif
 
 ###ARM32架构	
 ifeq ($(platform), arm32)
-EXTRA_CFLAGS += -DARCH_ARM=1
+EXTRA_CFLAGS += -DARCH_ARM=1 -DHAVE_NEON=1
 endif
 
 ###ARM64架构	
 ifeq ($(platform), arm64)
-EXTRA_CFLAGS += -DARCH_AARCH64=1
+EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1 -DHAVE_ARMV8=1 -DHAVE_VFP=1
 endif
 endif
 
@@ -221,26 +225,26 @@ ifeq ($(findstring Darwin, $(OS)), Darwin)
 
 ###MAC32架构	
 ifeq ($(platform), x86_32)
-EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1
 endif
 
 ###MAC64架构	
 ifeq ($(platform), x86_64)
-EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0
+EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1
 endif
 
 ###ARM64架构(Apple Silicon)	
 ifeq ($(platform), arm64)
-EXTRA_CFLAGS += -DARCH_AARCH64=1
+EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1 -DHAVE_ARMV8=1 -DHAVE_VFP=1
 endif
 
 ###IOS平台
 ifeq ($(target_plat), ios)
 ifeq ($(platform), ios32)
-EXTRA_CFLAGS += -DARCH_ARM=1
+EXTRA_CFLAGS += -DARCH_ARM=1 -DHAVE_NEON=1
 endif
 ifeq ($(platform), ios64)
-EXTRA_CFLAGS += -DARCH_AARCH64=1
+EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1
 endif
 
 endif

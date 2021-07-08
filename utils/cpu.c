@@ -117,6 +117,7 @@ void av_set_cpu_flags_mask(int mask)
 #define CPUFLAG_AESNI    (AV_CPU_FLAG_AESNI    | CPUFLAG_SSE42)
 #define CPUFLAG_AVX512   (AV_CPU_FLAG_AVX512   | CPUFLAG_AVX2)
 
+/*
 static const AVOption cpuflags_opts[] = {
 	{ "flags"   , NULL, 0, AV_OPT_TYPE_FLAGS, { .i64 = 0 }, INT64_MIN, INT64_MAX, .unit = "flags" },
 #if   ARCH_PPC
@@ -162,13 +163,13 @@ static const AVOption cpuflags_opts[] = {
 	{ NULL },
 };
 
+
 static const AVClass class = {
 	.class_name = "cpuflags",
-	//.item_name  = av_default_item_name,
+	.item_name  = av_default_item_name,
 	.option     = cpuflags_opts,
 	.version    = 0,
 };
-
 
 int av_parse_cpu_caps(unsigned *flags, const char *s)
 {
@@ -237,7 +238,7 @@ int av_parse_cpu_caps(unsigned *flags, const char *s)
     };
     static const AVClass class = {
         .class_name = "cpuflags",
-        //.item_name  = av_default_item_name,
+        .item_name  = av_default_item_name,
         .option     = cpuflags_opts,
         .version    = 0,
     };
@@ -245,6 +246,7 @@ int av_parse_cpu_caps(unsigned *flags, const char *s)
 
 	return 0;// av_opt_eval_flags(&pclass, &cpuflags_opts[0], s, flags);
 }
+*/
 
 int av_cpu_count(void)
 {

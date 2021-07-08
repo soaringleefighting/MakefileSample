@@ -19,8 +19,8 @@
 #ifndef AVUTIL_AARCH64_CPU_H
 #define AVUTIL_AARCH64_CPU_H
 
-#include "libavutil/cpu.h"
-#include "libavutil/cpu_internal.h"
+#include "../cpu.h"
+#include "../cpu_internal.h"
 
 #define have_armv8(flags) CPUEXT(flags, ARMV8)
 #define have_neon(flags) CPUEXT(flags, NEON)

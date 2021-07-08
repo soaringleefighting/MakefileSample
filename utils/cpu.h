@@ -171,7 +171,7 @@ typedef struct AVClass {
 	* Callback to return the supported/allowed ranges.
 	* available since version (52.12)
 	*/
-	int(*query_ranges)(struct AVOptionRanges **, void *obj, const char *key, int flags);
+	//int(*query_ranges)(struct AVOptionRanges **, void *obj, const char *key, int flags);
 } AVClass;
 
 

@@ -16,9 +16,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include "libavutil/cpu.h"
-#include "libavutil/cpu_internal.h"
-#include "config.h"
+#include "../cpu.h"
+#include "../cpu_internal.h"
 
 #define CORE_FLAG(f) \
     (AV_CPU_FLAG_ ## f * (HAVE_ ## f ## _EXTERNAL || HAVE_ ## f ## _INLINE))
