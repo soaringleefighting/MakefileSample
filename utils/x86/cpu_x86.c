@@ -28,7 +28,6 @@
 #include "../cpu.h"
 #include "../cpu_internal.h"
 
-
 #if HAVE_X86ASM
 
 #define cpuid(index, eax, ebx, ecx, edx)        \

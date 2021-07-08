@@ -51,7 +51,7 @@
 #endif
 #endif  /* End of #if defined(__GNUC__) */
 
-#define HAS_NEON			(1)		// 0表示纯C，1表示arm neon优化
+#define HAS_NEON			(0)		// 0表示纯C，1表示arm neon优化
 #define X86_ASM			    (0)		// 1:开启x86 assembly  0:不开启x86 assembly
 
 #define ENABLE_CHROMA		(1)		// 1: 使能色度   0:只处理亮度

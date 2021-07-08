@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -28,23 +28,27 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -84,7 +88,8 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_MBCS;WIN32;_CRT_SECURE_NO_WARNINGS;ARCH_X86_64=0;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_SSE;HAVE_AVX;HAVE_X86ASM;inline=__inline;_MBCS;WIN32;_CRT_SECURE_NO_WARNINGS;ARCH_X86_64=0;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include/atomics/win32;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -123,7 +128,8 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>_MBCS;WIN32;_CRT_SECURE_NO_WARNINGS;ARCH_X86_64=0;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_SSE;HAVE_AVX;HAVE_X86ASM;inline=__inline;_MBCS;WIN32;_CRT_SECURE_NO_WARNINGS;ARCH_X86_64=0;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include/atomics/win32;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -149,10 +155,16 @@
     <ClCompile Include="..\..\..\..\src\libavsample.c" />
     <ClCompile Include="..\..\..\..\src\transpose.c" />
     <ClCompile Include="..\..\..\..\src\x86\transpose_init.c" />
+    <ClCompile Include="..\..\..\..\utils\cpu.c" />
+    <ClCompile Include="..\..\..\..\utils\x86\cpu_x86.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\include\atomics\win32\stdatomic.h" />
     <ClInclude Include="..\..\..\..\src\transpose.h" />
     <ClInclude Include="..\..\..\..\src\version.h" />
+    <ClInclude Include="..\..\..\..\utils\cpu.h" />
+    <ClInclude Include="..\..\..\..\utils\cpu_internal.h" />
+    <ClInclude Include="..\..\..\..\utils\x86\cpu.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\..\src\x86\transpose_x86_32.asm">
@@ -172,6 +184,13 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I %(RootDir)%(Directory)\ -f win64 -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=1  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\..\utils\x86\cpuid.asm">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">yasm -I %(RootDir)%(Directory)\ -f win32  -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=0  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">yasm -I %(RootDir)%(Directory)\ -f win32  -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=0  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
     </CustomBuild>
     <None Include="..\..\..\..\utils\x86\x86inc.asm" />
     <None Include="..\..\..\..\utils\x86\x86util.asm" />

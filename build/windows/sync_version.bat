@@ -1,15 +1,15 @@
 echo off
-@rem chcp 65001
+chcp 936
 SetLocal EnableDelayedExpansion
 
-echo 运行路径: %cd%
-echo 脚本路径: %0
+echo run_dir: %cd%
+echo bat_dir: %0
 set scriptPath=%~dp0
 set versionPath=%~dp0..\..\src
 
 
 
-echo 获取Git版本信息
+echo Get git version info...
 set variable_file=%scriptPath%temp_variable.txt
 echo %variable_file%
 echo. 2>%variable_file%
@@ -41,15 +41,15 @@ set commit_date=%commit_date: =%
 set commit_date=%commit_date:>=%
 set commit_date=%commit_date:"=%
 	
-echo 分支 %branch_name%
-echo 哈希 %commit_hash%
-echo 日期 %commit_date%
+echo Branch: %branch_name%
+echo Hash  : %commit_hash%
+echo Date  : %commit_date%
 
 
 if exist %variable_file% del %variable_file%
 
 
-echo 生成最新版本信息文件
+echo Generate the newest version file
 set new_revision_file="%scriptPath%RevisionNew.h"
 @rem echo %new_revision_file%
 
@@ -64,10 +64,11 @@ for /f "tokens=*" %%i in ('type "%scriptPath%\Revision.t"') do (
 
 
 
-echo 比较新旧版本信息文件
+echo Compare version info
 set old_revision_file=%versionPath%\version.h
 if not exist %old_revision_file% ( 
-	echo 不存在旧版本信息文件，直接拷贝新文件
+@rem 不存在旧版本信息文件，直接拷贝新文件
+	echo not exist old version file, just copy new file!
 	copy /Y %new_revision_file% %old_revision_file%
 	goto end
 )
@@ -77,12 +78,13 @@ fc /n %new_revision_file% %old_revision_file%
 ::
 
 if %errorlevel% == 1 (
-	echo 版本有更新，拷贝新文件
+@rem 版本有更新，拷贝新文件
+	echo version changed, copy new file!
 	copy /Y %new_revision_file% %old_revision_file%
 ) else if %errorlevel% NEQ 0 (
-	echo 比较失败
+	echo compare failed!
 ) else (
-	echo 版本文件已经是最新
+	echo version file already updated!
 )
 
 

@@ -39,24 +39,22 @@ void transpose_init()
 {
 	transpose = libavsample_transpose_c;
 
-	// TODO: 支持根据不同平台设置汇编函数指针
-// 	if (ARCH_AARCH64)
-// 	{
-// 		transpose_init_aarch64(dst, src, width_lowres, stride_lowres, lines_lowres);
-// 	}
-// 
-// 	if (ARCH_ARM)
-// 	{
-// 		transpose_init_arm(dst, src, width_lowres, stride_lowres, lines_lowres);
-// 	}
-// 
-// 	if (ARCH_X86)
-// 	{
-// 		transpose_init_x86(dst, src, width_lowres, stride_lowres, lines_lowres);
-// 	}
-// 
-// 	if (ARCH_MIPS)
-// 	{
-// 		//TODO
-// 	}
+	// 支持根据不同平台设置汇编函数指针
+#if ARCH_AARCH64
+		transpose_init_aarch64();
+#endif // End of #if ARCH_AARCH64
+
+#if ARCH_ARM
+		transpose_init_arm();
+#endif // End of #if ARCH_ARM
+
+#if ARCH_X86
+		transpose_init_x86();
+#endif // End of #if ARCH_X86
+
+#if ARCH_MIPS
+	{
+		//TODO
+	}
+#endif // End of #if ARCH_MIPS
 }

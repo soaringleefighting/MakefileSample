@@ -3,6 +3,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerCommandArguments>-i BlowingBubbles_416x240_50.yuv -o out_sse2.yuv -wt 416  -ht  240  -fr  100  </LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerWorkingDirectory>G:\Work\Codecs\YUV</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerWorkingDirectory>F:\YUV_sequences</LocalDebuggerWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LocalDebuggerCommandArguments>-i BlowingBubbles_416x240_50.yuv -o out_sse2.yuv -wt 416  -ht  240  -fr  100  </LocalDebuggerCommandArguments>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
+    <LocalDebuggerWorkingDirectory>F:\YUV_sequences</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>

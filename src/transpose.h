@@ -90,8 +90,7 @@ int libavsample_transpose_c(unsigned char *dst, unsigned char *src, int width,
 /*		   Author		: lipeng
 /*		   Modification	: create the function
 /********************************************************************/
-void transpose_init_aarch64(unsigned char *dst, unsigned char *src, int width,
-							int stride, int lines);
+void transpose_init_aarch64();
 
 // arm neon初始化
 /******************************************************************
@@ -112,8 +111,7 @@ void transpose_init_aarch64(unsigned char *dst, unsigned char *src, int width,
 /*		   Author		: lipeng
 /*		   Modification	: create the function
 /********************************************************************/
-void transpose_init_arm(unsigned char *dst, unsigned char *src, int width, 
-						int stride, int lines);
+void transpose_init_arm();
 
 // x86 simd初始化
 /******************************************************************
@@ -134,6 +132,6 @@ void transpose_init_arm(unsigned char *dst, unsigned char *src, int width,
 /*		   Author		: lipeng
 /*		   Modification	: create the function
 /********************************************************************/
-void transpose_init_x86(unsigned char *dst, unsigned char *src, int width,
-					int stride, int lines);
+void transpose_init_x86();
+
 #endif /*X264_LOWRES_TRANSPOSE_H*/
