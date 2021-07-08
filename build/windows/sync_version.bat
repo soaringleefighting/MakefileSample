@@ -1,15 +1,15 @@
 echo off
-chcp 936
+@rem chcp 936
 SetLocal EnableDelayedExpansion
 
-echo run_dir: %cd%
-echo bat_dir: %0
+echo ÔËĞĞÂ·¾¶: %cd%
+echo ½Å±¾Â·¾¶: %0
 set scriptPath=%~dp0
 set versionPath=%~dp0..\..\src
 
 
 
-echo Get git version info...
+echo »ñÈ¡Git°æ±¾ĞÅÏ¢...
 set variable_file=%scriptPath%temp_variable.txt
 echo %variable_file%
 echo. 2>%variable_file%
@@ -41,15 +41,15 @@ set commit_date=%commit_date: =%
 set commit_date=%commit_date:>=%
 set commit_date=%commit_date:"=%
 	
-echo Branch: %branch_name%
-echo Hash  : %commit_hash%
-echo Date  : %commit_date%
+echo ·ÖÖ§£º %branch_name%
+echo ¹şÏ£:  %commit_hash%
+echo ÈÕÆÚ£º %commit_date%
 
 
 if exist %variable_file% del %variable_file%
 
 
-echo Generate the newest version file
+echo Éú³É×îĞÂ°æ±¾ĞÅÏ¢ÎÄ¼ş...
 set new_revision_file="%scriptPath%RevisionNew.h"
 @rem echo %new_revision_file%
 
@@ -64,11 +64,10 @@ for /f "tokens=*" %%i in ('type "%scriptPath%\Revision.t"') do (
 
 
 
-echo Compare version info
+echo ±È½ÏĞÂ¾É°æ±¾ĞÅÏ¢ÎÄ¼ş...
 set old_revision_file=%versionPath%\version.h
 if not exist %old_revision_file% ( 
-@rem ä¸å­˜åœ¨æ—§ç‰ˆæœ¬ä¿¡æ¯æ–‡ä»¶ï¼Œç›´æ¥æ‹·è´æ–°æ–‡ä»¶
-	echo not exist old version file, just copy new file!
+	echo ²»´æÔÚ¾É°æ±¾ĞÅÏ¢ÎÄ¼ş£¬Ö±½Ó¿½±´ĞÂÎÄ¼ş
 	copy /Y %new_revision_file% %old_revision_file%
 	goto end
 )
@@ -78,13 +77,12 @@ fc /n %new_revision_file% %old_revision_file%
 ::
 
 if %errorlevel% == 1 (
-@rem ç‰ˆæœ¬æœ‰æ›´æ–°ï¼Œæ‹·è´æ–°æ–‡ä»¶
-	echo version changed, copy new file!
+	echo °æ±¾ÓĞ¸üĞÂ£¬¿½±´ĞÂÎÄ¼ş£¡
 	copy /Y %new_revision_file% %old_revision_file%
 ) else if %errorlevel% NEQ 0 (
-	echo compare failed!
+	echo ±È½ÏÊ§°Ü!
 ) else (
-	echo version file already updated!
+	echo °æ±¾ÎÄ¼şÒÑ¾­ÊÇ×îĞÂ£¡
 )
 
 
