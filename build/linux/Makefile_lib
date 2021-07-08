@@ -51,7 +51,6 @@ LIBS	:= $(LIB_PATH)/$(LIB_NAME).a $(LIB_PATH)/$(LIB_NAME).so
 C_SRCS = $(SRC_PATH)/transpose.c  	\
 		 $(SRC_PATH)/libavsample.c	\
 		 $(UTL_PATH)/cpu.c
-	      
 
 #方法2：遍历文件夹
 #以下通过通配符和字符串函数获取OBJS的方式适用于较大工程（含有大量文件）的编译
@@ -86,7 +85,8 @@ endif
 
 # ARM32位NEON汇编
 ifeq ($(platform), arm32)
-C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c
+C_SRCS += $(SRC_PATH)/arm/transpose_init_arm.c	\
+		  $(UTL_PATH)/arm/cpu_arm.c
 A_SRCS += $(SRC_PATH)/arm/transpose_neon_arm.S
 endif
 
@@ -106,7 +106,8 @@ endif
 
 # AARCH64 NEON汇编
 ifeq ($(platform), ios64)
-C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c
+C_SRCS += $(SRC_PATH)/aarch64/transpose_init_aarch64.c 	\
+		  $(UTL_PATH)/aarch64/cpu_aarch64.c
 A_SRCS += $(SRC_PATH)/aarch64/transpose_neon_aarch64.S
 endif
 endif

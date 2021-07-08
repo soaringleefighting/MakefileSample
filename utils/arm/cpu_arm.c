@@ -19,6 +19,19 @@
 #include "../cpu.h"
 #include "../cpu_internal.h"
 
+#define HAVE_ARMV5TE_EXTERNAL 	0
+#define HAVE_ARMV5TE_INLINE 	0
+#define HAVE_ARMV6_EXTERNAL 	0
+#define HAVE_ARMV6_INLINE 		0
+#define HAVE_ARMV6T2_EXTERNAL	0
+#define HAVE_ARMV6T2_INLINE		0
+#define HAVE_VFP_EXTERNAL		0
+#define HAVE_VFP_INLINE			0
+#define HAVE_VFPV3_EXTERNAL		0
+#define HAVE_VFPV3_INLINE		0
+#define HAVE_NEON_EXTERNAL		1
+#define HAVE_NEON_INLINE		1
+
 #define CORE_FLAG(f) \
     (AV_CPU_FLAG_ ## f * (HAVE_ ## f ## _EXTERNAL || HAVE_ ## f ## _INLINE))
 
@@ -35,7 +48,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "libavutil/avstring.h"
 
 #define AT_HWCAP        16
 
@@ -46,6 +58,17 @@
 #define HWCAP_NEON      (1 << 12)
 #define HWCAP_VFPv3     (1 << 13)
 #define HWCAP_TLS       (1 << 15)
+
+static int av_strstart(const char *str, const char *pfx, const char **ptr)
+{
+    while (*pfx && *pfx == *str) {
+        pfx++;
+        str++;
+    }
+    if (!*pfx && ptr)
+        *ptr = str;
+    return !*pfx;
+}
 
 static int get_hwcap(uint32_t *hwcap)
 {

@@ -13,7 +13,7 @@
 int x264_lowres_transpose_neon(unsigned char *dst, unsigned char* src, int width_lowres, int stride_lowres ,int lines_lowres);
 
 
-void x264_lowres_transpose_init_arm(unsigned char *dst, unsigned char* src, int width_lowres, int stride_lowres ,int lines_lowres)
+void transpose_init_arm()
 {
 	int cpu_flags = av_get_cpu_flags();
 
