@@ -33,11 +33,11 @@ static atomic_int cpu_flags = ATOMIC_VAR_INIT(-1);
 
 static int get_cpu_flags(void)
 {
-#if (ARCH_AARCH64)
+#if (ARCH_AARCH64 && HAVE_NEON)
         return ff_get_cpu_flags_aarch64();
 #endif
 
-#if (ARCH_ARM)
+#if (ARCH_ARM && HAVE_NEON)
         return ff_get_cpu_flags_arm();
 #endif
 
@@ -45,7 +45,7 @@ static int get_cpu_flags(void)
         return ff_get_cpu_flags_ppc();
 #endif
 
-#if (ARCH_X86)
+#if (ARCH_X86 && HAVE_X86ASM)
         return ff_get_cpu_flags_x86();
 #endif
 
@@ -90,11 +90,13 @@ int av_get_cpu_flags(void)
     return flags;
 }
 
+/*
 void av_set_cpu_flags_mask(int mask)
 {
     atomic_store_explicit(&cpu_flags, get_cpu_flags() & mask,
                           memory_order_relaxed);
 }
+*/
 
 #define CPUFLAG_MMXEXT   (AV_CPU_FLAG_MMX      | AV_CPU_FLAG_MMXEXT | AV_CPU_FLAG_CMOV)
 #define CPUFLAG_3DNOW    (AV_CPU_FLAG_3DNOW    | AV_CPU_FLAG_MMX)

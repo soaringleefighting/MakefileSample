@@ -90,7 +90,7 @@ ifeq ($(target_plat), mac)
 	
 ##X86_32架构
 ifeq ($(platform), x86_32)
-	ARCH_DEF 		:= -DMAC32
+	ARCH_DEF 		:= -DMAC32 -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch			:= x86
 	EXTRA_CFLAGS	:= -m32 -arch i386 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -m32 -dynamiclib -Wl, -dynamic  #-read_only_relocs
@@ -102,7 +102,7 @@ endif
 
 ##X86_64架构
 ifeq ($(platform), x86_64)
-	ARCH_DEF 		:= -DMAC64
+	ARCH_DEF 		:= -DMAC64 -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch			:= x86
 	EXTRA_CFLAGS	:= -m64 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -m64 
@@ -114,7 +114,7 @@ endif
 
 ## Apple Silicon arm64架构
 ifeq ($(platform), arm64)
-	ARCH_DEF	 	:= -DARM64
+	ARCH_DEF	 	:= -DARCH_X86=0 -DARCH_ARM=0 -DARCH_AARCH64=1 -DARCH_MIPS=0
 	arch		 	:= aarch64
 	EXTRA_CFLAGS 	:= -arch arm64 $(ARCH_DEF)
 	EXTRA_LFLAGS 	:= -arch arm64 
@@ -135,7 +135,7 @@ ifeq ($(platform), ios32)
 	AR				:= ar
 	ASM				:= gas-preprocessor.pl -arch arm -as-type apple-clang --$(CC)
 	
-	ARCH_DEF		:= -DIOS32
+	ARCH_DEF		:= -DIOS32 -DARCH_X86=0 -DARCH_ARM=1 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch			:= arm
 	EXTRA_CFLAGS	:= -arch armv7 -mios-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -arch armv7 -mios-version-min=6.0 -shared
@@ -150,11 +150,11 @@ ifeq ($(platform), ios64)
 	AR				:= ar
 	ASM				:= gas-preprocessor.pl -arch aarch64 -as-type apple-clang --$(CC)
 	
-	ARCH_DEF		:= -DIOS64
+	ARCH_DEF		:= -DIOS64 -DARCH_X86=0 -DARCH_ARM=0 -DARCH_AARCH64=1 -DARCH_MIPS=0
 	arch			:= aarch64
 	EXTRA_CFLAGS 	:= -arch arm64 -mios-version-min=6.0 $(ARCH_DEF)
 	EXTRA_LFLAGS 	:= -arch arm64 -mios-version-min=6.0 -shared
-	EXTRA_AFLAGS 	:= -arch arm64 -mios-version-min=6.0 $(ARCH_DEF)
+	EXTRA_AFLAGS 	:= -arch arm64 -mios-version-min=6.0 $(ARCH_DEF) -DPREFIX
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
@@ -241,10 +241,10 @@ endif
 ###IOS平台
 ifeq ($(target_plat), ios)
 ifeq ($(platform), ios32)
-EXTRA_CFLAGS += -DARCH_ARM=1 -DHAVE_NEON=1
+EXTRA_CFLAGS += -DARCH_ARM=1 -DHAVE_NEON=1 -DHAVE_ARMV8=0 -DHAVE_VFP=0
 endif
 ifeq ($(platform), ios64)
-EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1
+EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1 -DHAVE_ARMV8=0 -DHAVE_VFP=0
 endif
 
 endif

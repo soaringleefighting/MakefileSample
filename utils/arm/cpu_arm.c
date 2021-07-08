@@ -19,6 +19,7 @@
 #include "../cpu.h"
 #include "../cpu_internal.h"
 
+// TODO: those macros need defined by makefile.
 #define HAVE_ARMV5TE_EXTERNAL 	0
 #define HAVE_ARMV5TE_INLINE 	0
 #define HAVE_ARMV6_EXTERNAL 	0
@@ -31,6 +32,12 @@
 #define HAVE_VFPV3_INLINE		0
 #define HAVE_NEON_EXTERNAL		1
 #define HAVE_NEON_INLINE		1
+
+#define HAVE_ARMV5TE			0
+#define HAVE_ARMV6				0
+#define HAVE_ARMV6T2			0
+#define HAVE_VFP				0
+#define HAVE_VFPV3				0
 
 #define CORE_FLAG(f) \
     (AV_CPU_FLAG_ ## f * (HAVE_ ## f ## _EXTERNAL || HAVE_ ## f ## _INLINE))
