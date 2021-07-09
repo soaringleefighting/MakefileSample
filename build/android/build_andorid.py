@@ -48,7 +48,7 @@ def process(ndk_dir, android_dir, pure_c, delimiter):
 		if(not isExist):
 			os.mkdir(outdir)
 
-	pFile = open(app_mk, 'w')
+	pFile = open(app_mk, 'w') #armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64
 	cmd = 'APP_ABI := armeabi armeabi-v7a arm64-v8a x86 x86_64 mips mips64\nAPP_PLATFORM := android-9\nNDK_TOOLCHAIN_VERSION := 4.9'
 	pFile.writelines(cmd)
 	pFile.write('\n')

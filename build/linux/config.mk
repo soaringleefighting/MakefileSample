@@ -106,7 +106,7 @@ ifeq ($(platform), x86_64)
 	arch			:= x86
 	EXTRA_CFLAGS	:= -m64 $(ARCH_DEF)
 	EXTRA_LFLAGS	:= -m64 
-	EXTRA_LFLAGS_SO := -dynamiclib -Wl, -dynamic
+	EXTRA_LFLAGS_SO := -shared -dynamiclib -Wl, -dynamic
 	EXTRA_AFLAGS	:= -f macho64 -m amd64 -DHAVE_ALIGNED_STACK=1 -DARCH_X86_64=1 -DHAVE_CPUNOP=0  -DPREFIX $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
@@ -160,30 +160,30 @@ ifeq ($(platform), ios64)
 endif 
 
 ifeq ($(platform), ios_sim32)
-	CC				:= xcrun -sdk $(CROSS)simulators clang
+	CC				:= xcrun -sdk $(CROSS)simulator14.4 clang
 	CPP				:= g++
 	AR				:= ar
 	ASM				:= yasm
 	
-	ARCH_DEF	 	:=
+	ARCH_DEF	 	:= -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch		 	:= x86
 	EXTRA_CFLAGS 	:= -arch i386 -mios-simulator-version-min=6.0 $(ARCH_DEF)
-	EXTRA_LFLAGS 	:= -arch i386 -mios-simulator-version-min=6.0 -Wl, -Bsymbolic-functions -read_only_relocs suppress
+	EXTRA_LFLAGS 	:= -arch i386 -mios-simulator-version-min=6.0 -shared -Wl, -Bsymbolic-functions -read_only_relocs suppress
 	EXTRA_AFLAGS 	:= -f macho32 -m x86 $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif 
 
 ifeq ($(platform), ios_sim64)
-	CC				:= xcrun -sdk $(CROSS)simulators clang
+	CC				:= xcrun -sdk $(CROSS)simulator14.4 clang
 	CPP				:= g++
 	AR				:= ar
 	ASM				:= yasm
 	
-	ARCH_DEF	 	:=
+	ARCH_DEF	 	:= -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
 	arch		 	:= x86
 	EXTRA_CFLAGS 	:= -arch x86_64 -mios-simulator-version-min=6.0 $(ARCH_DEF)
-	EXTRA_LFLAGS 	:= -arch x86_64 -mios-simulator-version-min=6.0
+	EXTRA_LFLAGS 	:= -arch x86_64 -mios-simulator-version-min=6.0 -shared
 	EXTRA_AFLAGS 	:= -f macho64 -m amd64 $(ARCH_DEF)
 	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
@@ -225,12 +225,12 @@ ifeq ($(findstring Darwin, $(OS)), Darwin)
 
 ###MAC32架构	
 ifeq ($(platform), x86_32)
-EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1
+EXTRA_CFLAGS += -DARCH_X86_64=0 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1 -DHAVE_SSE=1 -DHAVE_AVX=1
 endif
 
 ###MAC64架构	
 ifeq ($(platform), x86_64)
-EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1
+EXTRA_CFLAGS += -DARCH_X86_64=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DHAVE_X86ASM=1 -DHAVE_SSE=1 -DHAVE_AVX=1
 endif
 
 ###ARM64架构(Apple Silicon)	

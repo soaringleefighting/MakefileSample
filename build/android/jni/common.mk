@@ -10,11 +10,11 @@ LOCAL_C_INCLUDES := ./	\
 			$(SRC_DIR)/$(INCLUDEASM)
 
 ##纯C文件路径
-C_SRCS:= $(wildcard $(SRC_DIR)/*.c) 
-C_SRCS+= $(wildcard $(SRC_DIR)/../utils/*.c) 
+C_SRCS := $(wildcard $(SRC_DIR)/*.c) 
+C_SRCS += $(wildcard $(SRC_DIR)/../utils/*.c) 
 
 ##汇编文件路径
-A_SRCS		:= 
+A_SRCS := 
 
 ifeq ($(PURE_C),0)
 
@@ -36,8 +36,9 @@ A_SRCS		+= $(wildcard $(SRC_DIR)/x86/transpose_x86_64.asm)
 A_SRCS		+= $(wildcard $(SRC_DIR)/../utils/x86/*.asm) 
 endif
 
+#arm架构
 #arm架构32位
-ifeq ($(findstring armeabi-v7a, $(TARGET_ARCH_ABI)), armeabi-v7a)
+ifeq ($(findstring armeabi, $(TARGET_ARCH_ABI)), armeabi)
 IFLAGS += -I$(SRC_DIR)/arm
 C_SRCS += $(wildcard $(SRC_DIR)/$(INCLUDEASM)/*.c)
 A_SRCS += $(wildcard $(SRC_DIR)/arm/*.S) 
@@ -53,7 +54,6 @@ A_SRCS += $(wildcard $(SRC_DIR)/aarch64/*.S)
 C_SRCS += $(wildcard $(SRC_DIR)/../utils/$(INCLUDEASM)/*.c)
 A_SRCS += $(wildcard $(SRC_DIR)/../utils/aarch64/*.S) 
 endif
-
 endif
 
 #$(warning $(CFLAGS)) 

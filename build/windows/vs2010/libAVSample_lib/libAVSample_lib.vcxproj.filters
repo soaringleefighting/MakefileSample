@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\src\libavsample.c" />
+    <ClCompile Include="..\..\..\..\src\transpose.c" />
+    <ClCompile Include="..\..\..\..\utils\cpu.c">
+      <Filter>utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\src\x86\transpose_init.c">
+      <Filter>x86</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\utils\x86\cpu_x86.c">
+      <Filter>utils\x86</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\src\transpose.h" />
+    <ClInclude Include="..\..\..\..\src\version.h" />
+    <ClInclude Include="..\..\..\..\utils\cpu.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\utils\cpu_internal.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\utils\x86\cpu.h">
+      <Filter>utils\x86</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\include\atomics\win32\stdatomic.h">
+      <Filter>utils</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\..\..\..\src\x86\transpose_x86_64.asm">
+      <Filter>x86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\..\src\x86\transpose_x86_32.asm">
+      <Filter>x86</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\..\utils\x86\cpuid.asm">
+      <Filter>x86</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\..\utils\x86\x86util.asm">
+      <Filter>x86</Filter>
+    </None>
+    <None Include="..\..\..\..\utils\x86\x86inc.asm">
+      <Filter>x86</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="utils">
+      <UniqueIdentifier>{5a8b7b78-98f2-434d-b660-4ab5e7a75483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="x86">
+      <UniqueIdentifier>{70bccd3b-ab2b-44d3-9cbf-e8e83b8abd85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="utils\x86">
+      <UniqueIdentifier>{79a539ea-3e00-4bc5-b4f7-0c05cca882fa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

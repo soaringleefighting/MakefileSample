@@ -26,3 +26,9 @@ Features：
 5. 2021.6.20 第四版v4.1
 Features：
 (1) 支持macOS arm64架构（Apple Silicon M1）.
+
+6. 2021.7.9  第五版v5.0
+Features：
+(1) 支持不同架构平台根据cpuflags设置汇编函数指针。
+    示例：[AVSample_lib] info: using cpu capabilities: sse2!
+	

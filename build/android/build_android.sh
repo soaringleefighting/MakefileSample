@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-	echo "./build.sh ndk_dir"
+if [ $# -ne 2 ]; then
+	echo "./build.sh ndk_dir PURE_C(0 or 1)"
 	exit
 fi
 
@@ -26,7 +26,7 @@ find $PJTDIR/libs -name  "*.a" | xargs rm -rf
 find $PJTDIR/out -name "*.a" | xargs rm -rf
 echo "------------------------build static library----------------------"
 cp $PJTDIR/jni/Android_lib.mk $PJTDIR/jni/Android.mk
-./ndk-build SHARED=0 BUILD_VER=REV -B -C $PJTDIR/jni
+./ndk-build SHARED=0 BUILD_VER=REV -B -C $PJTDIR/jni PURE_C=$2
 cp  $PJTDIR/obj/local/armeabi/libAVSample.a  $PJTDIR/out/armeabi/
 cp  $PJTDIR/obj/local/armeabi-v7a/libAVSample.a  $PJTDIR/out/armeabi-v7a/
 cp  $PJTDIR/obj/local/arm64-v8a/libAVSample.a  $PJTDIR/out/arm64-v8a/
@@ -37,7 +37,7 @@ cp  $PJTDIR/obj/local/mips64/libAVSample.a  $PJTDIR/out/mips64/
 
 echo "------------------------build dynamic library----------------------"
 cp $PJTDIR/jni/Android_lib.mk $PJTDIR/jni/Android.mk
-./ndk-build SHARED=1 BUILD_VER=REV -B -C $PJTDIR/jni
+./ndk-build SHARED=1 BUILD_VER=REV -B -C $PJTDIR/jni PURE_C=$2
 cp  $PJTDIR/obj/local/armeabi/libAVSample.so $PJTDIR/out/armeabi/
 cp  $PJTDIR/obj/local/armeabi-v7a/libAVSample.so  $PJTDIR/out/armeabi-v7a/
 cp  $PJTDIR/obj/local/arm64-v8a/libAVSample.so  $PJTDIR/out/arm64-v8a/
@@ -47,8 +47,8 @@ cp  $PJTDIR/obj/local/mips/libAVSample.so  $PJTDIR/out/mips/
 cp  $PJTDIR/obj/local/mips64/libAVSample.so  $PJTDIR/out/mips64/
 
 echo "------------------------build executable----------------------" 
-cp $PJTDIR/jni/Android_app.mk  $PJTDIR/jni/Android.mk
-./ndk-build  BUILD_VER=REV -B -C $PJTDIR/jni
+cp $PJTDIR/jni/Android_app.mk  $PJTDIR/jni/Android.mk 
+./ndk-build  BUILD_VER=REV -B -C $PJTDIR/jni PURE_C=$2
 cp  $PJTDIR/obj/local/armeabi/demo  $PJTDIR/out/armeabi/
 cp  $PJTDIR/obj/local/armeabi-v7a/demo  $PJTDIR/out/armeabi-v7a/
 cp  $PJTDIR/obj/local/arm64-v8a/demo  $PJTDIR/out/arm64-v8a/

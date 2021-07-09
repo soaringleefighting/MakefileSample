@@ -1,48 +1,20 @@
 1>------ Rebuild All started: Project: libAVSample_lib, Configuration: Release Win32 ------
-1>Build started 2020/6/23 11:01:53.
+1>Build started 2021/7/9 11:22:26.
 1>_PrepareForClean:
 1>  Deleting file "Release\libAVSample_lib.lastbuildstate".
-1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-1>InitializeBuildStatus:
-1>  Creating "Release\libAVSample_lib.unsuccessfulbuild" because "AlwaysCreate" was specified.
-1>CustomBuild:
-1>  Performing Custom Build Tools
-1>ClCompile:
-1>  transpose.c
-1>y:\projects\samples\makefilesample\src\transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-1>  transpose_init.c
-1>y:\projects\samples\makefilesample\src\x86\../transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-1>Lib:
-1>  libAVSample_lib.vcxproj -> Y:\Projects\samples\MakefileSample\build\windows\vs2010\libAVSample_lib\../../../../out/windows_x86_Win32\libAVSample.lib
-1>FinalizeBuildStatus:
-1>  Deleting file "Release\libAVSample_lib.unsuccessfulbuild".
-1>  Touching "Release\libAVSample_lib.lastbuildstate".
+1>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.Targets(511,5): error MSB8008: Specified platform toolset (v120) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected.
 1>
-1>Build succeeded.
+1>Build FAILED.
 1>
-1>Time Elapsed 00:00:01.06
+1>Time Elapsed 00:00:00.25
 2>------ Rebuild All started: Project: libAVSample_demo, Configuration: Release Win32 ------
-2>Build started 2020/6/23 11:01:54.
+2>Build started 2021/7/9 11:22:26.
 2>_PrepareForClean:
 2>  Deleting file "Release\libAVSample_demo.lastbuildstate".
-2>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Microsoft.CppBuild.targets(299,5): warning MSB8004: Output Directory does not end with a trailing slash.  This build instance will add the slash as it is required to allow proper evaluation of the Output Directory.
-2>InitializeBuildStatus:
-2>  Touching "Release\libAVSample_demo.unsuccessfulbuild".
-2>ClCompile:
-2>  demo.c
-2>..\..\..\..\demo\demo.c : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-2>y:\projects\samples\makefilesample\demo\../src/transpose.h : warning C4819: The file contains a character that cannot be represented in the current code page (936). Save the file in Unicode format to prevent data loss
-2>  os_time_sdk.c
-2>Link:
-2>  Generating code
-2>  Finished generating code
-2>  libAVSample_demo.vcxproj -> Y:\Projects\samples\MakefileSample\build\windows\vs2010\libAVSample_demo\../../../../bin/windows_x86_Win32\libAVSample_demo.exe
-2>FinalizeBuildStatus:
-2>  Deleting file "Release\libAVSample_demo.unsuccessfulbuild".
-2>  Touching "Release\libAVSample_demo.lastbuildstate".
+2>C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0\Platforms\Win32\Microsoft.Cpp.Win32.Targets(511,5): error MSB8008: Specified platform toolset (v120) is not installed or invalid. Please make sure that a supported PlatformToolset value is selected.
 2>
-2>Build succeeded.
+2>Build FAILED.
 2>
-2>Time Elapsed 00:00:01.68
-========== Rebuild All: 2 succeeded, 0 failed, 0 skipped ==========
+2>Time Elapsed 00:00:00.18
+========== Rebuild All: 0 succeeded, 2 failed, 0 skipped ==========
 

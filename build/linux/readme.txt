@@ -1,4 +1,4 @@
-Linux系统下编译方法说明：
+Linux/ARM/MacOS/IOS系统下编译方法说明：
 
 gas-preprocessor.pl是用于IOS平台下的汇编解释器，来源于x264。
 
@@ -45,7 +45,7 @@ make -f Makefile_demo target_plat=mac platform=x86_64 PUREC=1
 make -f Makefile_lib  target_plat=mac platform=x86_64 PUREC=0
 make -f Makefile_demo target_plat=mac platform=x86_64 PUREC=0
 
-(2) MacOS X86_32位：
+(2) MacOS X86_32位：(deprecated)
 纯C编译：
 make -f Makefile_lib  target_plat=mac platform=x86_32 PUREC=1
 make -f Makefile_demo target_plat=mac platform=x86_32 PUREC=1

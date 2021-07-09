@@ -15,3 +15,5 @@
 ### 方法3：脚本方式（shell） 
 ./build_android.sh /home/myshare/android-ndk-r10e
 
+注意事项：采用shell脚本运行之前，需要清理掉 build/android/out下面的压缩包。
+
