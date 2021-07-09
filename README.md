@@ -112,11 +112,22 @@ make -f Makefile_demo platform=win32
 
 make -f Makefile_demo platform=x64
 
-## 三、版本历史
+## 三、版本历史(Revison History)
 
-- v1.0 2020.6.18  支持主要平台的编译；<\n>
-- v2.0 2020.6.22  支持ARM平台的编译； <\n>
-- v3.0 2020.6.23  支持windowsmake编译；<\n>
-- v4.0 2020.8.1   支持git版本获取和命令行参数解析；<\n>
-- v4.1 2020.6.20  支持macOS平台arm64架构编译； <\n>
-- v5.0 2020.7.9   支持不同平台根据cpuflags自动设置汇编函数指针；<\n>
+- v1.0 2020.6.18	
+支持Window和Linux平台的编译；<br>
+
+- v2.0 2020.6.22	
+支持ARM和macOS平台的编译； <br>
+
+- v3.0 2020.6.23	
+支持Windows平台make编译；<br>
+
+- v4.0 2020.8.1		
+支持git版本获取和命令行参数解析；<br>
+
+- v4.1 2021.6.20	
+支持macOS平台arm64架构编译(Apple Silicon)； <br>
+
+- v5.0 2021.7.9		
+支持不同平台根据cpuflags自动设置汇编函数指针；<br>
