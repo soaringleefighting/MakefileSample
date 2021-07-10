@@ -115,7 +115,7 @@ make -f Makefile_demo platform=x64
 ## 三、版本历史(Revison History)
 
 - v1.0 2020.6.18	
-支持Window和Linux平台的编译；<br>
+支持Windows和Linux平台的编译；<br>
 
 - v2.0 2020.6.22	
 支持ARM和macOS平台的编译； <br>

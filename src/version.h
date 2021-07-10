@@ -1,11 +1,11 @@
 /****************************************************************** 
-/*    Kunpeng Technology CO. LTD 
-/*    2010-2020 Copyright reversed 
-/*    File			:	revison.h 
-/*    Description	:	this file is revison information.  
-/*    Author		:	lipeng 
-/*    Modified		:	2020.8.16	Created 
-/********************************************************************/ 
+    Kunpeng Technology CO. LTD 
+    2010-2020 Copyright reversed 
+    File			:	revison.h 
+    Description		:	this file is revison information.  
+    Author			:	lipeng 
+    Modified		:	2020.8.16	Created 
+********************************************************************/ 
 #ifndef VERSION_H_  
 #define VERSION_H_  
 //major.minor.svn(git)version.datetime_base   

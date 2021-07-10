@@ -35,7 +35,7 @@ OBJS = $(patsubst %.asm,%.o, $(patsubst %.cpp,%.o, $(patsubst %.c,%.o,$(SRCS))))
 ##设置编译选项
 CFLAGS := $(DEBUG_FLAGS) -Wall   
 CFLAGS += $(EXTRA_CFLAGS) -I$(INC_PATH)
-CFLAGS += -DCONFIG_CORE=0
+CFLAGS += -DCONFIG_CORE=1
 #-I/usr/include/
 
 CXXFLAGS := -Wall 
