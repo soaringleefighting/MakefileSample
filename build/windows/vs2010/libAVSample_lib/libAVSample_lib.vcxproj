@@ -28,13 +28,13 @@
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
@@ -75,6 +75,7 @@
     <TargetName>libAVSample</TargetName>
     <OutDir>../../../../out/windows_x86_$(platform)</OutDir>
     <LinkIncremental>true</LinkIncremental>
+    <CustomBuildBeforeTargets>PreBuildEvent</CustomBuildBeforeTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>libAVSample</TargetName>
@@ -116,11 +117,17 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_MBCS;_CRT_SECURE_NO_WARNINGS;WIN32;HAVE_X86ASM;ARCH_X86_64;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>HAVE_SSE;HAVE_AVX;HAVE_X86ASM;inline=__inline;_MBCS;_CRT_SECURE_NO_WARNINGS;WIN32;HAVE_X86ASM;ARCH_X86_64;ARCH_X86=1;ARCH_MIPS=0;ARCH_ARM=0;ARCH_AARCH64=0;ARCH_PPC=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../../../include/atomics/win32;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <CustomBuildStep>
+      <Command>../../sync_version.bat</Command>
+      <Message>Sync git info version</Message>
+      <Outputs>nonexistentfile</Outputs>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -180,7 +187,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I %(RootDir)%(Directory)\ -f win64 -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=1  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I %(RootDir)%(Directory)\ -f win64  -DHAVE_CPUNOP=0   -DARCH_X86_64=1  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">yasm -I %(RootDir)%(Directory)\ -f win64 -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=1  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
@@ -191,6 +198,8 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">yasm -I %(RootDir)%(Directory)\ -f win32  -DPREFIX  -DHAVE_CPUNOP=0   -DARCH_X86_64=0  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename).obj;%(Outputs)</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">yasm -I %(RootDir)%(Directory)\ -f win64  -DHAVE_CPUNOP=0   -DARCH_X86_64=1  -DHAVE_ALIGNED_STACK=1  -o $(IntDir)%(Filename).obj %(FullPath)</Command>
     </CustomBuild>
     <None Include="..\..\..\..\utils\x86\x86inc.asm" />
     <None Include="..\..\..\..\utils\x86\x86util.asm" />
