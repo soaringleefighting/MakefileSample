@@ -112,6 +112,14 @@ make -f Makefile_demo platform=win32
 
 make -f Makefile_demo platform=x64
 
+
+### 7、龙芯平台（mips64架构）
+
+make -f Makefile_lib platform=mips64 CROSS=loongarch64-linux-gnu-
+
+make -f Makefile_demo platform=mips64 CROSS=loongarch64-linux-gnu-
+
+
 ## 三、版本历史(Revison History)
 
 - v1.0 2020.6.18	---> 支持Windows和Linux平台的编译和汇编的编译；<br>

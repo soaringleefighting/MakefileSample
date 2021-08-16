@@ -1,2 +1,2 @@
 注：
-1、ARM平台和macOS平台编译在linux目录下。
+1、ARM平台、macOS平台和龙芯平台的编译在linux目录下。
