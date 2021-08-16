@@ -81,3 +81,8 @@ make -f Makefile_demo target_plat=ios platform=ios64 PUREC=0
 (3) IOS Universal Pack：
 cd ./build/ios
 make -f Makefile_ios_pack
+
+4、MIPS平台
+纯C编译：
+make -f Makefile_lib platform=mips64 CROSS=loongarch64-linux-gnu-
+make -f Makefile_demo platform=mips64 CROSS=loongarch64-linux-gnu-

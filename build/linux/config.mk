@@ -49,6 +49,19 @@ ifeq ($(platform), arm64)
 	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
 endif
 
+###MIPS64架构	
+ifeq ($(platform), mips64)
+	ARCH_DEF		:= -DARCH_X86=0 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=1
+	arch			:= mips64
+	ASM				:= $(CROSS)gcc
+	EXTRA_CFLAGS 	:= -march=loongarch64  $(ARCH_DEF)
+	EXTRA_LFLAGS 	:= -march=loongarch64  -pie -fPIE
+	EXTRA_AFLAGS 	:= -march=loongarch64  $(ARCH_DEF)
+	EXTRA_LFLAGS_SO := -shared
+	LIB_DIR			:= ./../../out/$(OS)_$(arch)_$(platform)
+	OUT_DIR			:= ./../../bin/$(OS)_$(arch)_$(platform)
+endif
+
 ###X86_32架构	
 ifeq ($(platform), x86_32)
 	ARCH_DEF		:= -DARCH_X86=1 -DARCH_ARM=0 -DARCH_AARCH64=0 -DARCH_MIPS=0
@@ -218,8 +231,12 @@ endif
 ifeq ($(platform), arm64)
 EXTRA_CFLAGS += -DARCH_AARCH64=1 -DHAVE_NEON=1 -DHAVE_ARMV8=1 -DHAVE_VFP=1
 endif
-endif
 
+###MIPS64架构	
+ifeq ($(platform), mips64)
+EXTRA_CFLAGS += -DARCH_MIPS=1 -DHAVE_MSA=1
+endif
+endif
 
 ifeq ($(findstring Darwin, $(OS)), Darwin) 
 
